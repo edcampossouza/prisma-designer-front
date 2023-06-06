@@ -4,6 +4,7 @@ import DataModel from "./prisma-objects/DataModel";
 import { Schema, Model } from "prismadesign-lib";
 type Props = {
   schema: Schema;
+  onDragModel: (model: Model) => void;
 };
 export default function Canvas(props: Props) {
   const { schema } = props;
@@ -11,7 +12,11 @@ export default function Canvas(props: Props) {
     <main>
       <Xwrapper>
         {schema.models.map((model) => (
-          <DataModel key={model.name} name={model.name} fields={model.fields} />
+          <DataModel
+            key={model.name}
+            model={model}
+            onDragModel={props.onDragModel}
+          />
         ))}
         {/* <DataModel fields={[]} name={model.name} /> */}
       </Xwrapper>

@@ -5,6 +5,7 @@ import { useRef, useCallback } from "react";
 import Canvas from "@/app/components/Canvas";
 import MainMenu from "@/app/components/MainMenu";
 import CreateEntity from "./modal/CreateEntity";
+import CreateField from "./modal/CreateField";
 
 import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineClose } from "react-icons/md";
@@ -13,18 +14,24 @@ import classNames from "classnames";
 import styles from "./App.module.css";
 
 import { useState, useEffect } from "react";
-import { Schema } from "prismadesign-lib";
+import { Schema, Model, IntType } from "prismadesign-lib";
 
 const schema = new Schema("store");
 
 export default function App() {
   const [createEntity, setCreateEntity] = useState(false);
+  const [createField, setCreateField] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<Model | null>(null);
 
   useEffect(() => {
     const createMenuFunction = (event: KeyboardEvent) => {
-      console.log(event.key, createEntity, "s");
-      if (!createEntity && (event.key === "n" || event.key === "N")) {
-        setCreateEntity(true);
+      console.log(createEntity, createField, event.key);
+      if (
+        !createEntity &&
+        !createField &&
+        (event.key === "n" || event.key === "N")
+      ) {
+        fnCreateModel();
         event.preventDefault();
       }
     };
@@ -32,21 +39,50 @@ export default function App() {
     return () => {
       document.removeEventListener("keypress", createMenuFunction);
     };
-  }, [createEntity]);
+  }, [createEntity, createField]);
+
+  function fnCreateField() {
+    setCreateField(true);
+    setCreateEntity(false);
+  }
+
+  function fnCreateModel() {
+    setCreateField(false);
+    setCreateEntity(true);
+  }
 
   return (
     <div>
-      <MainMenu createEntity={() => setCreateEntity(!createEntity)} />
-      <Canvas schema={schema} />
+      <MainMenu
+        createEntity={fnCreateModel}
+        createField={fnCreateField}
+        selectedModel={selectedModel}
+      />
+      <Canvas schema={schema} onDragModel={setSelectedModel} />
       <CreateEntity
         hidden={!createEntity}
         submit={(name: string) => {
           try {
-            schema.addModel(name);
+            const model = schema.addModel(name);
+            setSelectedModel(model);
           } catch (error) {
             notify(error);
           }
           setCreateEntity(false);
+        }}
+      />
+      <CreateField
+        hidden={!createField}
+        submit={(name: string) => {
+          try {
+            console.log(selectedModel);
+            if (selectedModel) {
+              selectedModel.addField(name, IntType);
+            }
+          } catch (error) {
+            notify(error);
+          }
+          setCreateField(false);
         }}
       />
       <Toaster />
