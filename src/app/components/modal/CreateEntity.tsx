@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useRef, useEffect } from "react";
 
 type Props = {
   hidden: boolean;
@@ -6,6 +8,7 @@ type Props = {
 };
 
 export default function CreateEntity(props: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   function submit() {
     if (props.submit) {
@@ -13,6 +16,13 @@ export default function CreateEntity(props: Props) {
       setName("");
     }
   }
+
+  useEffect(() => {
+    if (!props.hidden) {
+      inputRef.current?.focus();
+    }
+  }, [props.hidden]);
+
   return (
     <div
       className={`fixed inset-0  w-fit h-fit mx-auto my-16 flex flex-col bg-gray-100 rounded-lg border-2 border-black ${
@@ -21,6 +31,7 @@ export default function CreateEntity(props: Props) {
     >
       Model name
       <input
+        ref={inputRef}
         className="text-lg bg-slate-200"
         value={name}
         onChange={(e) => setName(e.target.value)}
