@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef, useCallback } from "react";
+
 import Canvas from "@/app/components/Canvas";
 import MainMenu from "@/app/components/MainMenu";
 import CreateEntity from "./modal/CreateEntity";
@@ -10,17 +12,30 @@ import { HiLightningBolt } from "react-icons/hi";
 import classNames from "classnames";
 import styles from "./App.module.css";
 
-import { useState } from "react";
-import { Model, Schema } from "prismadesign-lib";
+import { useState, useEffect } from "react";
+import { Schema } from "prismadesign-lib";
 
 const schema = new Schema("store");
 
-// schema.addModel("post")
-// schema.models[0].addField("postId", new DataType("Int"))
 export default function App() {
   const [createEntity, setCreateEntity] = useState(false);
+
+  useEffect(() => {
+    const createMenuFunction = (event: KeyboardEvent) => {
+      console.log(event.key, createEntity, "s");
+      if (!createEntity && (event.key === "n" || event.key === "N")) {
+        setCreateEntity(true);
+        event.preventDefault();
+      }
+    };
+    document.addEventListener("keypress", createMenuFunction);
+    return () => {
+      document.removeEventListener("keypress", createMenuFunction);
+    };
+  }, [createEntity]);
+
   return (
-    <>
+    <div>
       <MainMenu createEntity={() => setCreateEntity(!createEntity)} />
       <Canvas schema={schema} />
       <CreateEntity
@@ -29,14 +44,13 @@ export default function App() {
           try {
             schema.addModel(name);
           } catch (error) {
-            console.log(error);
             notify(error);
           }
           setCreateEntity(false);
         }}
       />
       <Toaster />
-    </>
+    </div>
   );
 }
 

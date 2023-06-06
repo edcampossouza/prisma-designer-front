@@ -36,7 +36,6 @@ export default function CreateEntity(props: Props) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-          console.log(event.key);
           if (event.key === "Enter") {
             submit();
           }
