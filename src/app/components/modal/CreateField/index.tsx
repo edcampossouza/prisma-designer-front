@@ -1,18 +1,21 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import TypeOptions from "./TypeOptions";
+import { DataType } from "prismadesign-lib";
 
 type Props = {
   hidden: boolean;
-  submit?: Function;
+  submit: (name: string, type: DataType) => void;
 };
 
 export default function CreateField(props: Props) {
+  const [type, setType] = useState<DataType | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   function submit() {
-    if (props.submit) {
-      props.submit(name);
+    if (props.submit && type !== null) {
+      props.submit(name, type);
       setName("");
     }
   }
@@ -41,6 +44,7 @@ export default function CreateField(props: Props) {
           }
         }}
       />
+      <TypeOptions selectDataType={setType} />
       <button
         className="rounded bg-red-300 hover:bg-orange-500 w-fit mx-auto px-2 "
         onClick={submit}

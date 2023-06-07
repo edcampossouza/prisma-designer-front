@@ -14,7 +14,7 @@ import classNames from "classnames";
 import styles from "./App.module.css";
 
 import { useState, useEffect } from "react";
-import { Schema, Model, IntType } from "prismadesign-lib";
+import { Schema, Model, IntType, DataType } from "prismadesign-lib";
 
 const schema = new Schema("store");
 
@@ -25,13 +25,19 @@ export default function App() {
 
   useEffect(() => {
     const createMenuFunction = (event: KeyboardEvent) => {
-      console.log(createEntity, createField, event.key);
       if (
         !createEntity &&
         !createField &&
-        (event.key === "n" || event.key === "N")
+        (event.key === "m" || event.key === "M")
       ) {
         fnCreateModel();
+        event.preventDefault();
+      } else if (
+        !createEntity &&
+        !createField &&
+        (event.key === "f" || event.key === "F")
+      ) {
+        fnCreateField();
         event.preventDefault();
       }
     };
@@ -73,11 +79,11 @@ export default function App() {
       />
       <CreateField
         hidden={!createField}
-        submit={(name: string) => {
+        submit={(name: string, type: DataType) => {
           try {
             console.log(selectedModel);
             if (selectedModel) {
-              selectedModel.addField(name, IntType);
+              selectedModel.addField(name, type);
             }
           } catch (error) {
             notify(error);
