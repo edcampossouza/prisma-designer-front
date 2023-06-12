@@ -22,7 +22,7 @@ type Props = {
   schema: Schema;
 };
 
-export default function (props: Props) {
+export default function TypeOptions(props: Props) {
   const options: DataType[] = [BooleanType, DateTimeType, IntType, StringType];
 
   const [attributes, setAttributes] = useState<FieldAttribute[]>([]);
