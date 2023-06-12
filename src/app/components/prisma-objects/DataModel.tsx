@@ -32,7 +32,7 @@ export default function DataModel(props: Props) {
             <DataField
               key={field.name}
               field={field}
-              xarrow_id={`${name}#${field}`}
+              xarrow_id={`${name}#${field.name}`}
             />
           ))}
         </div>

@@ -14,7 +14,12 @@ import classNames from "classnames";
 import styles from "./App.module.css";
 
 import { useState, useEffect } from "react";
-import { Schema, Model, IntType, DataType } from "prismadesign-lib";
+import { Schema, Model, IntType, DataType, Field } from "prismadesign-lib";
+import { generatePrismaFromSchema } from "../services/schema-api";
+
+export type ReferenceOptions = {
+  references: Model;
+};
 
 const schema = new Schema("store");
 
@@ -63,6 +68,11 @@ export default function App() {
         createEntity={fnCreateModel}
         createField={fnCreateField}
         selectedModel={selectedModel}
+        generateSchema={async () => {
+          const serialized = schema.toSerial();
+          const res = await generatePrismaFromSchema(serialized);
+          console.log(res);
+        }}
       />
       <Canvas schema={schema} onDragModel={setSelectedModel} />
       <CreateEntity
@@ -79,11 +89,20 @@ export default function App() {
       />
       <CreateField
         hidden={!createField}
-        submit={(name: string, type: DataType) => {
+        schema={schema}
+        submit={(
+          name: string,
+          type: DataType,
+          refOptions: ReferenceOptions | undefined
+        ) => {
           try {
-            console.log(selectedModel);
             if (selectedModel) {
-              selectedModel.addField(name, type);
+              const field = selectedModel.addField(name, type);
+              if (refOptions) {
+                console.log(refOptions);
+                field.setReference(refOptions.references.fields[0]);
+              }
+              console.log(field.model);
             }
           } catch (error) {
             notify(error);
@@ -91,6 +110,7 @@ export default function App() {
           setCreateField(false);
         }}
       />
+
       <Toaster />
     </div>
   );

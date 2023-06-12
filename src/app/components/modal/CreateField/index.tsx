@@ -2,24 +2,35 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import TypeOptions from "./TypeOptions";
-import { DataType } from "prismadesign-lib";
+import { DataType, Model, Schema } from "prismadesign-lib";
+import { ReferenceOptions } from "../../App";
 
 type Props = {
   hidden: boolean;
-  submit: (name: string, type: DataType) => void;
+  submit: (name: string, type: DataType, references?: ReferenceOptions) => void;
+  schema: Schema;
 };
 
 export default function CreateField(props: Props) {
   const [type, setType] = useState<DataType | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [referenceOptions, setReferenceOptions] = useState<ReferenceOptions>();
   const [name, setName] = useState("");
   function submit() {
     if (props.submit && type !== null) {
-      props.submit(name, type);
+      props.submit(name, type, referenceOptions);
       setName("");
     }
   }
 
+  function setFieldType(type: DataType) {
+    setType(type);
+  }
+
+  function setReferenceOptionsFn(referenceOptions: ReferenceOptions) {
+    console.log(`setting to ${referenceOptions.references.name}`);
+    setReferenceOptions(referenceOptions);
+  }
   useEffect(() => {
     if (!props.hidden) {
       inputRef.current?.focus();
@@ -44,7 +55,11 @@ export default function CreateField(props: Props) {
           }
         }}
       />
-      <TypeOptions selectDataType={setType} />
+      <TypeOptions
+        selectDataType={setFieldType}
+        setReferences={setReferenceOptionsFn}
+        schema={props.schema}
+      />
       <button
         className="rounded bg-red-300 hover:bg-orange-500 w-fit mx-auto px-2 "
         onClick={submit}
