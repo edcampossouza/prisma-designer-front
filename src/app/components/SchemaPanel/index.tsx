@@ -4,33 +4,11 @@ import { Schema, SerializedSchema } from "prismadesign-lib";
 import { FaRegCopy } from "react-icons/fa";
 
 type Props = {
-  schema: Schema;
   formattedText?: string;
 };
 
-function serializeSchema(schema: SerializedSchema) {
-  let file = "";
-  schema.models.forEach((model) => {
-    file += ` model ${model.name} { \n`;
-    model.fields.forEach((field) => {
-      file += `\t\t${field.name}  ${field.type}\n`;
-      if (field.references) {
-        file += `\t\t${field.references.model.toLowerCase()} ${
-          field.references.model
-        } @relation (fields: [${field.name}], references: [${
-          field.references.field
-        }])
-          
-          \n`;
-      }
-    });
-    file += "} \n";
-  });
-  return file;
-}
-
 export default function SchemaPanel(props: Props) {
-  const { formattedText, schema } = props;
+  const { formattedText } = props;
   const [copyMsg, setCopyMsg] = useState(false);
   return (
     <div className="fixed w-full bottom-0 ">
