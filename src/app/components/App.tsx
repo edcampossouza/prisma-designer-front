@@ -15,7 +15,14 @@ import classNames from "classnames";
 import styles from "./App.module.css";
 
 import { useState, useEffect } from "react";
-import { Schema, Model, IntType, DataType, Field } from "prismadesign-lib";
+import {
+  Schema,
+  Model,
+  IntType,
+  DataType,
+  Field,
+  IdFieldAttribute,
+} from "prismadesign-lib";
 import { generatePrismaFromSchema } from "../services/schema-api";
 
 export type ReferenceOptions = {
@@ -79,9 +86,12 @@ export default function App() {
       <Canvas schema={schema} onDragModel={setSelectedModel} />
       <CreateEntity
         hidden={!createEntity}
-        submit={(name: string) => {
+        submit={(name: string, createId?: boolean) => {
           try {
             const model = schema.addModel(name);
+            if (createId) {
+              model.addField("id", IntType, [IdFieldAttribute]);
+            }
             setSelectedModel(model);
           } catch (error) {
             notify(error);
@@ -114,7 +124,7 @@ export default function App() {
       />
 
       <Toaster />
-      <SchemaPanel schema={schema} formattedText={schemaText} />
+      <SchemaPanel formattedText={schemaText} />
     </div>
   );
 }
