@@ -10,6 +10,7 @@ import CreateField from "./modal/CreateField";
 import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineClose } from "react-icons/md";
 import { HiLightningBolt } from "react-icons/hi";
+import SchemaPanel from "./SchemaPanel";
 import classNames from "classnames";
 import styles from "./App.module.css";
 
@@ -27,6 +28,7 @@ export default function App() {
   const [createEntity, setCreateEntity] = useState(false);
   const [createField, setCreateField] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
+  const [schemaText, setSchemaText] = useState("");
 
   useEffect(() => {
     const createMenuFunction = (event: KeyboardEvent) => {
@@ -71,7 +73,7 @@ export default function App() {
         generateSchema={async () => {
           const serialized = schema.toSerial();
           const res = await generatePrismaFromSchema(serialized);
-          console.log(res);
+          setSchemaText(res);
         }}
       />
       <Canvas schema={schema} onDragModel={setSelectedModel} />
@@ -112,6 +114,7 @@ export default function App() {
       />
 
       <Toaster />
+      <SchemaPanel schema={schema} formattedText={schemaText} />
     </div>
   );
 }
