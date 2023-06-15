@@ -2,7 +2,13 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import TypeOptions from "./TypeOptions";
-import { DataType, Schema, FieldAttribute } from "prismadesign-lib";
+import DefaultValueSelector from "./DefaultValueSelector";
+import {
+  DataType,
+  Schema,
+  FieldAttribute,
+  DefaultFieldAttribute,
+} from "prismadesign-lib";
 import { ReferenceOptions } from "../../App";
 
 type Props = {
@@ -11,6 +17,7 @@ type Props = {
     name: string,
     type: DataType,
     fieldAttributes: FieldAttribute[],
+    defaultValue?: string,
     references?: ReferenceOptions
   ) => void;
   schema: Schema;
@@ -21,18 +28,26 @@ export default function CreateField(props: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [attributes, setAttributes] = useState<FieldAttribute[]>([]);
   const [referenceOptions, setReferenceOptions] = useState<ReferenceOptions>();
+  const [defalutValue, setDefaultValue] = useState<string>();
+  const [isReference, setIsReference] = useState(false);
+
   const [name, setName] = useState("");
   function submit() {
     if (props.submit && type !== null) {
-      props.submit(name, type, attributes, referenceOptions);
+      let _defaultValue = attributes.includes(DefaultFieldAttribute)
+        ? defalutValue
+        : undefined;
+      props.submit(name, type, attributes, _defaultValue, referenceOptions);
       setName("");
       setAttributes([]);
       setReferenceOptions(undefined);
+      setIsReference(false);
     }
   }
 
   function setFieldType(type: DataType) {
     setType(type);
+    setDefaultValue("");
   }
 
   function setReferenceOptionsFn(referenceOptions: ReferenceOptions) {
@@ -67,9 +82,18 @@ export default function CreateField(props: Props) {
         selectDataType={setFieldType}
         setReferences={setReferenceOptionsFn}
         setAttributes={setAttributes}
+        isReference={isReference}
+        setIsReference={setIsReference}
         attributes={attributes}
         schema={props.schema}
       />
+      {type && attributes.includes(DefaultFieldAttribute) && (
+        <DefaultValueSelector
+          type={type}
+          value={defalutValue}
+          setValue={setDefaultValue}
+        />
+      )}
       <button
         className="rounded bg-red-300 hover:bg-orange-500 w-fit mx-auto px-2 "
         onClick={submit}

@@ -22,7 +22,7 @@ import {
   DataType,
   IdFieldAttribute,
   FieldAttribute,
-  Field,
+  DefaultFieldAttribute,
 } from "prismadesign-lib";
 import { generatePrismaFromSchema } from "../services/schema-api";
 
@@ -91,7 +91,10 @@ export default function App() {
           try {
             const model = schema.addModel(name);
             if (createId) {
-              model.addField("id", IntType, [IdFieldAttribute]);
+              model.addField("id", IntType, "autoincrement()", [
+                IdFieldAttribute,
+                DefaultFieldAttribute,
+              ]);
             }
             setSelectedModel(model);
           } catch (error) {
@@ -107,11 +110,17 @@ export default function App() {
           name: string,
           type: DataType,
           fieldAttributes: FieldAttribute[],
-          refOptions: ReferenceOptions | undefined
+          defaultValue?: string,
+          refOptions?: ReferenceOptions
         ) => {
           try {
             if (selectedModel) {
-              const field = selectedModel.addField(name, type, fieldAttributes);
+              const field = selectedModel.addField(
+                name,
+                type,
+                defaultValue,
+                fieldAttributes
+              );
               if (refOptions) {
                 const idField = refOptions.references.getIdField();
                 if (idField === null) {
