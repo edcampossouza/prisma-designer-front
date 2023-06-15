@@ -21,6 +21,8 @@ type Props = {
   selectDataType: (type: DataType) => void;
   setReferences: (reference: ReferenceOptions) => void;
   setAttributes: (attrs: FieldAttribute[]) => void;
+  isReference: boolean;
+  setIsReference: (val: boolean) => void;
   attributes: FieldAttribute[];
   schema: Schema;
 };
@@ -33,7 +35,7 @@ export default function TypeOptions(props: Props) {
   >([]);
 
   const [selectedType, setSelectedType] = useState<DataType>();
-  const [isForeignKey, setIsForeignKey] = useState(false);
+  const { isReference: isForeignKey, setIsReference: setIsForeignKey } = props;
   const [referencesModel, setReferencesModel] = useState<Model>();
 
   useEffect(() => {
