@@ -22,6 +22,7 @@ import {
   DataType,
   IdFieldAttribute,
   FieldAttribute,
+  Field,
 } from "prismadesign-lib";
 import { generatePrismaFromSchema } from "../services/schema-api";
 
@@ -112,10 +113,15 @@ export default function App() {
             if (selectedModel) {
               const field = selectedModel.addField(name, type, fieldAttributes);
               if (refOptions) {
-                console.log(refOptions);
+                const idField = refOptions.references.getIdField();
+                if (idField === null) {
+                  selectedModel.removeField(field);
+                  throw new Error(
+                    `Cannot set reference to ${refOptions.references.name}: model has no id`
+                  );
+                }
                 field.setReference(refOptions.references.fields[0]);
               }
-              console.log(field.model);
             }
           } catch (error) {
             notify(error);

@@ -26,6 +26,8 @@ export default function CreateField(props: Props) {
     if (props.submit && type !== null) {
       props.submit(name, type, attributes, referenceOptions);
       setName("");
+      setAttributes([]);
+      setReferenceOptions(undefined);
     }
   }
 
