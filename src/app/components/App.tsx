@@ -20,8 +20,8 @@ import {
   Model,
   IntType,
   DataType,
-  Field,
   IdFieldAttribute,
+  FieldAttribute,
 } from "prismadesign-lib";
 import { generatePrismaFromSchema } from "../services/schema-api";
 
@@ -105,11 +105,12 @@ export default function App() {
         submit={(
           name: string,
           type: DataType,
+          fieldAttributes: FieldAttribute[],
           refOptions: ReferenceOptions | undefined
         ) => {
           try {
             if (selectedModel) {
-              const field = selectedModel.addField(name, type);
+              const field = selectedModel.addField(name, type, fieldAttributes);
               if (refOptions) {
                 console.log(refOptions);
                 field.setReference(refOptions.references.fields[0]);

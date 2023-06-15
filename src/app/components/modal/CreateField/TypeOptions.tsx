@@ -16,16 +16,22 @@ import { IdFieldAttribute } from "prismadesign-lib";
 type ReferenceOptions = {
   references: Model;
 };
+
 type Props = {
   selectDataType: (type: DataType) => void;
   setReferences: (reference: ReferenceOptions) => void;
+  setAttributes: (attrs: FieldAttribute[]) => void;
+  attributes: FieldAttribute[];
   schema: Schema;
 };
 
 export default function TypeOptions(props: Props) {
   const options: DataType[] = [BooleanType, DateTimeType, IntType, StringType];
 
-  const [attributes, setAttributes] = useState<FieldAttribute[]>([]);
+  const [possibleAttributes, setPossibleAttributes] = useState<
+    FieldAttribute[]
+  >([]);
+
   const [selectedType, setSelectedType] = useState<DataType>();
   const [isForeignKey, setIsForeignKey] = useState(false);
   const [referencesModel, setReferencesModel] = useState<Model>();
@@ -33,11 +39,11 @@ export default function TypeOptions(props: Props) {
   useEffect(() => {
     if (selectedType) {
       if (isForeignKey) {
-        setAttributes(
+        setPossibleAttributes(
           selectedType.possibleAttributes.filter((a) => a !== IdFieldAttribute)
         );
       } else {
-        setAttributes(selectedType.possibleAttributes);
+        setPossibleAttributes(selectedType.possibleAttributes);
       }
     }
   }, [selectedType, isForeignKey]);
@@ -52,7 +58,7 @@ export default function TypeOptions(props: Props) {
             value={type.name}
             onChange={() => {
               props.selectDataType(type);
-              setAttributes(type.possibleAttributes);
+              setPossibleAttributes(type.possibleAttributes);
               setIsForeignKey(false);
               setSelectedType(type);
             }}
@@ -74,12 +80,33 @@ export default function TypeOptions(props: Props) {
               }}
             />
           </label>
-          {attributes.map((attribute) => (
-            <label key={attribute.name}>
-              <input type="checkbox" />
-              {attribute.name}
-            </label>
-          ))}
+          <label>
+            Attributes
+            <div>
+              {possibleAttributes.map((attribute) => (
+                <label key={attribute.name}>
+                  <input
+                    type="checkbox"
+                    checked={
+                      props.attributes.find((a) => a === attribute) !==
+                      undefined
+                    }
+                    onChange={() => {
+                      const f = props.attributes.find((a) => a === attribute);
+                      if (f)
+                        props.setAttributes(
+                          props.attributes.filter((at) => at !== attribute)
+                        );
+                      else {
+                        props.setAttributes([...props.attributes, attribute]);
+                      }
+                    }}
+                  />
+                  {attribute.name}
+                </label>
+              ))}
+            </div>
+          </label>
         </>
       }
 
