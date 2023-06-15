@@ -25,17 +25,19 @@ export default function DataModel(props: Props) {
         updateArrows();
       }}
     >
-      <div className="flex w-20 flex-col items-center bg-slate-200 cursor-move">
+      <div className="flex flex-col w-fit min-w-[150px] items-center bg-slate-200 cursor-move">
         <div className="text-lg w-full">{name}</div>
-        <div className="w-full">
-          {fields.map((field) => (
-            <DataField
-              key={field.name}
-              field={field}
-              xarrow_id={`${name}#${field.name}`}
-            />
-          ))}
-        </div>
+        <table className="w-full">
+          <tbody className="w-full">
+            {fields.map((field) => (
+              <DataField
+                key={field.name}
+                field={field}
+                xarrow_id={`${name}#${field.name}`}
+              />
+            ))}
+          </tbody>
+        </table>
       </div>
     </Draggable>
   );

@@ -2,23 +2,29 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import TypeOptions from "./TypeOptions";
-import { DataType, Model, Schema } from "prismadesign-lib";
+import { DataType, Schema, FieldAttribute } from "prismadesign-lib";
 import { ReferenceOptions } from "../../App";
 
 type Props = {
   hidden: boolean;
-  submit: (name: string, type: DataType, references?: ReferenceOptions) => void;
+  submit: (
+    name: string,
+    type: DataType,
+    fieldAttributes: FieldAttribute[],
+    references?: ReferenceOptions
+  ) => void;
   schema: Schema;
 };
 
 export default function CreateField(props: Props) {
   const [type, setType] = useState<DataType | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [attributes, setAttributes] = useState<FieldAttribute[]>([]);
   const [referenceOptions, setReferenceOptions] = useState<ReferenceOptions>();
   const [name, setName] = useState("");
   function submit() {
     if (props.submit && type !== null) {
-      props.submit(name, type, referenceOptions);
+      props.submit(name, type, attributes, referenceOptions);
       setName("");
     }
   }
@@ -58,6 +64,8 @@ export default function CreateField(props: Props) {
       <TypeOptions
         selectDataType={setFieldType}
         setReferences={setReferenceOptionsFn}
+        setAttributes={setAttributes}
+        attributes={attributes}
         schema={props.schema}
       />
       <button
