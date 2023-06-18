@@ -2,32 +2,24 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { signUp } from "../services/auth";
+import { signIn } from "../services/auth";
+import { storeUserInfo } from "../util/auth";
 
 export default function SignUp() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [infoMessage, setInfoMessage] = useState("");
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setInfoMessage("");
-    if (password !== confirmPassword) {
-      setInfoMessage("Passwords do not match");
-      setTimeout(() => {
-        setInfoMessage("");
-      }, 3000);
-      return;
-    } else {
-      try {
-        await signUp(email, password);
-        router.push("/sign-in");
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          setInfoMessage(error.response?.data?.message || error.message);
-        }
+    try {
+      const response = await signIn(email, password);
+      storeUserInfo(response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setInfoMessage(error.response?.data?.message || error.message);
       }
     }
   }
@@ -61,17 +53,6 @@ export default function SignUp() {
               className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
             />
           </div>
-          <div className="mb-2">
-            <label className="block text-sm font-semibold text-gray-800">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            />
-          </div>
           {infoMessage && (
             <div className="mb-2">
               <span className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-purple-400 focus:ring-purple-300 focus:outline-none focus:ring focus:ring-opacity-40">
@@ -84,18 +65,18 @@ export default function SignUp() {
               type="submit"
               className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:bg-purple-600"
             >
-              Sign Up
+              Login
             </button>
           </div>
         </form>
 
         <p className="mt-8 text-xs font-light text-center text-gray-700">
-          Already have an account?
+          Don't have an account yet?
           <a
-            href="/sign-in"
+            href="/sign-up"
             className="font-medium text-purple-600 hover:underline"
           >
-            Sign in
+            Sign up
           </a>
         </p>
       </div>
