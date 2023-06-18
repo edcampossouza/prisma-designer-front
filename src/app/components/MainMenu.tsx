@@ -1,7 +1,8 @@
 "use client";
-import IconButton from "./buttons/IconButton";
 import { AiFillPlusCircle, AiOutlineSend } from "react-icons/ai";
 import { Model } from "prismadesign-lib";
+import { useContext } from "react";
+import { UserContext } from "@/context/user.context";
 
 type Props = {
   createEntity: Function;
@@ -10,6 +11,7 @@ type Props = {
   generateSchema: Function;
 };
 export default function MainMenu(props: Props) {
+  const { user } = useContext(UserContext);
   return (
     <menu className="w-full h-16 bg-orange-300 flex justify-around items-center">
       <div className="  flex flex-col items-center">
@@ -33,6 +35,7 @@ export default function MainMenu(props: Props) {
           className="bg-green-400 rounded-md text-white text-lg hover:cursor-pointer w-12"
         />
       </div>
+      {user ? <>{user.email}</> : "Not logged in"}
     </menu>
   );
 }
