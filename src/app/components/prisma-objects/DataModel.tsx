@@ -4,14 +4,16 @@ import { useXarrow } from "react-xarrows";
 import DataField from "./DataField";
 
 import { Model } from "prismadesign-lib";
+import { GrModel } from "../App";
 
 type Props = {
-  model: Model;
+  model: GrModel;
   onDragModel: (model: Model) => void;
 };
 
 export default function DataModel(props: Props) {
-  const { fields, name } = props.model;
+  const { fields, name, selected } = props.model;
+
   const updateArrows = useXarrow();
   return (
     <Draggable
@@ -25,8 +27,12 @@ export default function DataModel(props: Props) {
         updateArrows();
       }}
     >
-      <div className="flex flex-col w-fit min-w-[150px] items-center bg-slate-200 cursor-move rounded p-2 ">
-        <div className="text-lg w-full">{name}</div>
+      <div
+        className={`flex flex-col w-fit min-w-[150px] items-center ${
+          selected ? "border-black border-2" : ""
+        }  bg-slate-200 cursor-move rounded p-2 `}
+      >
+        <div className="text-lg w-full border-b-2 border-black">{name}</div>
         <table className="w-full">
           <tbody className="w-full">
             {fields.map((field) => (
