@@ -25,7 +25,7 @@ export default function DataModel(props: Props) {
         updateArrows();
       }}
     >
-      <div className="flex flex-col w-fit min-w-[150px] items-center bg-slate-200 cursor-move">
+      <div className="flex flex-col w-fit min-w-[150px] items-center bg-slate-200 cursor-move rounded p-2 ">
         <div className="text-lg w-full">{name}</div>
         <table className="w-full">
           <tbody className="w-full">
