@@ -123,6 +123,7 @@ export default function App() {
         <UserWindow hidden={!userWindow} close={() => setUserWindow(false)} />
         <CreateEntity
           hidden={!createEntity}
+          cancel={() => setCreateEntity(false)}
           submit={(name: string, createId?: boolean) => {
             try {
               const model = schema.addModel(name);
