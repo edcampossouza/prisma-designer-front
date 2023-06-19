@@ -30,6 +30,9 @@ export type ReferenceOptions = {
   references: Model;
 };
 
+// model with its graphic info
+export type GrModel = Model & { selected?: boolean };
+
 const schema = new Schema("store");
 
 export default function App() {
@@ -43,6 +46,14 @@ export default function App() {
   function readUserInfo() {
     const data = getUserToken();
     if (data) setUser(data);
+  }
+
+  function onSelectModel(model: GrModel) {
+    setSelectedModel(model);
+    schema.models.forEach((m: GrModel) => {
+      delete m.selected;
+    });
+    model.selected = true;
   }
 
   useEffect(() => {
@@ -108,7 +119,7 @@ export default function App() {
             setSchemaText(res);
           }}
         />
-        <Canvas schema={schema} onDragModel={setSelectedModel} />
+        <Canvas schema={schema} onDragModel={onSelectModel} />
         <UserWindow hidden={!userWindow} close={() => setUserWindow(false)} />
         <CreateEntity
           hidden={!createEntity}
@@ -121,7 +132,7 @@ export default function App() {
                   DefaultFieldAttribute,
                 ]);
               }
-              setSelectedModel(model);
+              onSelectModel(model);
             } catch (error) {
               notify(error);
             }
