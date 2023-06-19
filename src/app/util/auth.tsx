@@ -8,7 +8,14 @@ export function storeUserInfo(data: UserInfo) {
 }
 
 export function getUserToken(): UserInfo | null {
-  const data: UserInfo = JSON.parse(localStorage.getItem("user-info") || "");
-  if (data.token) return data;
+  try {
+    const data: UserInfo = JSON.parse(localStorage.getItem("user-info") || "");
+    if (data.token) return data;
+    return null;
+  } catch (error) {}
   return null;
+}
+
+export function clearToken() {
+  localStorage.removeItem("user-info");
 }

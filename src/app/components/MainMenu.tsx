@@ -1,5 +1,5 @@
 "use client";
-import { AiFillPlusCircle, AiOutlineSend } from "react-icons/ai";
+import { AiFillPlusCircle, AiOutlineSend, AiOutlineUser } from "react-icons/ai";
 import { Model } from "prismadesign-lib";
 import { useContext } from "react";
 import { UserContext } from "@/context/user.context";
@@ -7,6 +7,7 @@ import { UserContext } from "@/context/user.context";
 type Props = {
   createEntity: Function;
   createField: Function;
+  toggleUserWindow: Function;
   selectedModel: Model | null;
   generateSchema: Function;
 };
@@ -35,7 +36,13 @@ export default function MainMenu(props: Props) {
           className="bg-green-400 rounded-md text-white text-lg hover:cursor-pointer w-12"
         />
       </div>
-      {user ? <>{user.email}</> : "Not logged in"}
+      <div className="  flex flex-col items-center">
+        <AiOutlineUser
+          onClick={() => props.toggleUserWindow()}
+          className="bg-green-400 rounded-md text-white text-lg hover:cursor-pointer w-12"
+        />
+        {user ? <>{user.email}</> : "Not logged in"}
+      </div>
     </menu>
   );
 }

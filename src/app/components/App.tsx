@@ -2,6 +2,7 @@
 
 import Canvas from "@/app/components/Canvas";
 import MainMenu from "@/app/components/MainMenu";
+import UserWindow from "./modal/User";
 import CreateEntity from "./modal/CreateEntity";
 import CreateField from "./modal/CreateField";
 import { UserContext } from "@/context/user.context";
@@ -13,7 +14,7 @@ import SchemaPanel from "./SchemaPanel";
 import classNames from "classnames";
 import styles from "./App.module.css";
 
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import {
   Schema,
   Model,
@@ -34,6 +35,7 @@ const schema = new Schema("store");
 export default function App() {
   const [createEntity, setCreateEntity] = useState(false);
   const [createField, setCreateField] = useState(false);
+  const [userWindow, setUserWindow] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
   const [schemaText, setSchemaText] = useState("");
   const [user, setUser] = useState<UserInfo>();
@@ -52,6 +54,7 @@ export default function App() {
       if (
         !createEntity &&
         !createField &&
+        !userWindow &&
         (event.key === "m" || event.key === "M")
       ) {
         fnCreateModel();
@@ -59,6 +62,7 @@ export default function App() {
       } else if (
         !createEntity &&
         !createField &&
+        !userWindow &&
         (event.key === "f" || event.key === "F")
       ) {
         fnCreateField();
@@ -69,16 +73,23 @@ export default function App() {
     return () => {
       document.removeEventListener("keypress", createMenuFunction);
     };
-  }, [createEntity, createField]);
+  }, [createEntity, createField, userWindow]);
 
   function fnCreateField() {
     setCreateField(true);
     setCreateEntity(false);
+    setUserWindow(false);
   }
 
   function fnCreateModel() {
     setCreateField(false);
     setCreateEntity(true);
+    setUserWindow(false);
+  }
+  function fnUserWindow() {
+    setCreateField(false);
+    setCreateEntity(false);
+    setUserWindow(true);
   }
 
   console.log(user);
@@ -90,6 +101,7 @@ export default function App() {
           createEntity={fnCreateModel}
           createField={fnCreateField}
           selectedModel={selectedModel}
+          toggleUserWindow={fnUserWindow}
           generateSchema={async () => {
             const serialized = schema.toSerial();
             const res = await generatePrismaFromSchema(serialized);
@@ -97,6 +109,7 @@ export default function App() {
           }}
         />
         <Canvas schema={schema} onDragModel={setSelectedModel} />
+        <UserWindow hidden={!userWindow} close={() => setUserWindow(false)} />
         <CreateEntity
           hidden={!createEntity}
           submit={(name: string, createId?: boolean) => {
