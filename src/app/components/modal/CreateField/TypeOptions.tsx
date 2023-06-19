@@ -23,6 +23,7 @@ type Props = {
   setAttributes: (attrs: FieldAttribute[]) => void;
   isReference: boolean;
   setIsReference: (val: boolean) => void;
+  referencedModel?: Model;
   attributes: FieldAttribute[];
   schema: Schema;
 };
@@ -36,7 +37,6 @@ export default function TypeOptions(props: Props) {
 
   const [selectedType, setSelectedType] = useState<DataType>();
   const { isReference: isForeignKey, setIsReference: setIsForeignKey } = props;
-  const [referencesModel, setReferencesModel] = useState<Model>();
 
   useEffect(() => {
     if (selectedType) {
@@ -121,10 +121,9 @@ export default function TypeOptions(props: Props) {
               <input
                 type="radio"
                 name="references"
-                checked={referencesModel === model}
+                checked={props.referencedModel === model}
                 onChange={() => {
                   props.setReferences({ references: model });
-                  setReferencesModel(model);
                 }}
               />
             </label>

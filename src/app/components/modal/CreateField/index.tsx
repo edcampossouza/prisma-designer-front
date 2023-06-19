@@ -84,6 +84,7 @@ export default function CreateField(props: Props) {
         setAttributes={setAttributes}
         isReference={isReference}
         setIsReference={setIsReference}
+        referencedModel={referenceOptions?.references}
         attributes={attributes}
         schema={props.schema}
       />
