@@ -3,9 +3,9 @@ import { Field } from "prismadesign-lib";
 export default function DataField(props: { field: Field; xarrow_id?: string }) {
   return (
     <tr className="text-sm font-mono" id={props.xarrow_id}>
-      <td>{props.field.name}</td>
-      <td>{props.field.type.name}</td>
-      <td>{attributesToString(props.field)}</td>
+      <td className="pr-1">{props.field.name}</td>
+      <td className="px-1">{props.field.type.name}</td>
+      <td className="pl-1">{attributesToString(props.field)}</td>
     </tr>
   );
 }
