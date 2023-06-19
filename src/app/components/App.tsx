@@ -143,6 +143,7 @@ export default function App() {
         <CreateField
           hidden={!createField}
           schema={schema}
+          cancel={() => setCreateField(false)}
           submit={(
             name: string,
             type: DataType,
