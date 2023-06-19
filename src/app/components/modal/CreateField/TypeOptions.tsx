@@ -52,43 +52,39 @@ export default function TypeOptions(props: Props) {
 
   return (
     <>
-      {options.map((type) => (
-        <label key={type.name}>
-          <input
-            type="radio"
-            name="datatype"
-            value={type.name}
-            onChange={() => {
-              props.selectDataType(type);
-              setPossibleAttributes(type.possibleAttributes);
-              setIsForeignKey(false);
-              setSelectedType(type);
-            }}
-          />
-          {type.name}
-        </label>
-      ))}
-
-      {
-        <>
-          <label>
-            Foreign Key?
+      <h2 className="mx-auto text-2xl">Type Options</h2>
+      <div className="ml-5">
+        {options.map((type) => (
+          <label
+            key={type.name}
+            className="flex items-center hover:cursor-pointer"
+          >
             <input
-              type="checkbox"
-              checked={isForeignKey}
-              onChange={(e) => {
-                const { checked } = e.target;
-                setIsForeignKey(checked);
+              type="radio"
+              name="datatype"
+              className="w-5 h-5 mr-2"
+              value={type.name}
+              onChange={() => {
+                props.selectDataType(type);
+                setPossibleAttributes(type.possibleAttributes);
+                setIsForeignKey(false);
+                setSelectedType(type);
               }}
             />
+            <span className="text">{type.name}</span>
           </label>
-          <label>
-            Attributes
-            <div>
+        ))}
+      </div>
+      {
+        <>
+          <div className="ml-2 flex flex-col">
+            <h3 className="text-center text-xl">Attributes</h3>
+            <div className="flex ml-5 space-x-4 ">
               {possibleAttributes.map((attribute) => (
-                <label key={attribute.name}>
+                <label key={attribute.name} className="flex items-center">
                   <input
                     type="checkbox"
+                    className="w-5 h-5 mr-2"
                     checked={
                       props.attributes.find((a) => a === attribute) !==
                       undefined
@@ -108,24 +104,38 @@ export default function TypeOptions(props: Props) {
                 </label>
               ))}
             </div>
-          </label>
+          </div>
         </>
       }
-
+      <h3 className="text-center text-xl">Key Options</h3>
+      <div className="flex items-center">
+        <div className="mx-auto flex items-center">
+          <span className="mr-2">Foreign Key?</span>
+          <input
+            type="checkbox"
+            className="w-5 h-5 mr-2"
+            checked={isForeignKey}
+            onChange={(e) => {
+              const { checked } = e.target;
+              setIsForeignKey(checked);
+            }}
+          />
+        </div>
+      </div>
       {isForeignKey && (
-        <div className="flex flex-col">
-          <h3>Key Options</h3>
+        <div className="flex flex-col ml-5">
           {props.schema.models.map((model) => (
-            <label key={model.name}>
-              {model.name}
+            <label key={model.name} className="flex items-center">
               <input
                 type="radio"
                 name="references"
+                className="w-5 h-5 mr-2"
                 checked={props.referencedModel === model}
                 onChange={() => {
                   props.setReferences({ references: model });
                 }}
               />
+              <span>{model.name}</span>
             </label>
           ))}
         </div>

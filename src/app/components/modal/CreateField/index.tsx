@@ -21,6 +21,7 @@ type Props = {
     references?: ReferenceOptions
   ) => void;
   schema: Schema;
+  cancel: Function;
 };
 
 export default function CreateField(props: Props) {
@@ -66,18 +67,20 @@ export default function CreateField(props: Props) {
         props.hidden && "invisible"
       }`}
     >
-      Field name
-      <input
-        ref={inputRef}
-        className="text-lg bg-slate-200"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
-          if (event.key === "Enter") {
-            submit();
-          }
-        }}
-      />
+      <div className="p-2">
+        <span className="pr-2">Field name: </span>
+        <input
+          ref={inputRef}
+          className="text-lg bg-slate-200 "
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === "Enter") {
+              submit();
+            }
+          }}
+        />
+      </div>
       <TypeOptions
         selectDataType={setFieldType}
         setReferences={setReferenceOptionsFn}
@@ -95,12 +98,20 @@ export default function CreateField(props: Props) {
           setValue={setDefaultValue}
         />
       )}
-      <button
-        className="rounded bg-red-300 hover:bg-orange-500 w-fit mx-auto px-2 "
-        onClick={submit}
-      >
-        Create
-      </button>
+      <div className="flex justify-around">
+        <button
+          className="rounded bg-green-300 hover:bg-green-500 w-fit px-2 "
+          onClick={submit}
+        >
+          Create
+        </button>
+        <button
+          className="rounded bg-orange-300 hover:bg-orange-500 w-fit px-2 "
+          onClick={() => props.cancel()}
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }
