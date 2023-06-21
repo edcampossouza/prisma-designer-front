@@ -25,6 +25,9 @@ import {
   DefaultFieldAttribute,
 } from "prismadesign-lib";
 import { generatePrismaFromSchema } from "../services/schema-api";
+import SaveSchema from "./modal/SaveSchema";
+
+import { nanoid } from "nanoid";
 
 export type ReferenceOptions = {
   references: Model;
@@ -33,14 +36,14 @@ export type ReferenceOptions = {
 // model with its graphic info
 export type GrModel = Model & { selected?: boolean };
 
-const schema = new Schema("store");
-
 export default function App() {
   const [createEntity, setCreateEntity] = useState(false);
   const [createField, setCreateField] = useState(false);
   const [userWindow, setUserWindow] = useState(false);
+  const [saveWindow, setSaveWindow] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
   const [schemaText, setSchemaText] = useState("");
+  const [schema, setSchema] = useState(new Schema(`unnamed-${nanoid(5)}`));
   const [user, setUser] = useState<UserInfo>();
 
   function readUserInfo() {
@@ -66,6 +69,7 @@ export default function App() {
         !createEntity &&
         !createField &&
         !userWindow &&
+        !saveWindow &&
         (event.key === "m" || event.key === "M")
       ) {
         fnCreateModel();
@@ -74,6 +78,7 @@ export default function App() {
         !createEntity &&
         !createField &&
         !userWindow &&
+        !saveWindow &&
         (event.key === "f" || event.key === "F")
       ) {
         fnCreateField();
@@ -84,23 +89,32 @@ export default function App() {
     return () => {
       document.removeEventListener("keypress", createMenuFunction);
     };
-  }, [createEntity, createField, userWindow]);
+  }, [createEntity, createField, userWindow, saveWindow]);
 
   function fnCreateField() {
     setCreateField(true);
     setCreateEntity(false);
     setUserWindow(false);
+    setSaveWindow(false);
   }
 
   function fnCreateModel() {
     setCreateField(false);
     setCreateEntity(true);
     setUserWindow(false);
+    setSaveWindow(false);
   }
   function fnUserWindow() {
     setCreateField(false);
     setCreateEntity(false);
     setUserWindow(true);
+    setSaveWindow(false);
+  }
+  function fnSaveWindow() {
+    setCreateField(false);
+    setCreateEntity(false);
+    setUserWindow(false);
+    setSaveWindow(true);
   }
 
   console.log(user);
@@ -112,7 +126,14 @@ export default function App() {
           createEntity={fnCreateModel}
           createField={fnCreateField}
           selectedModel={selectedModel}
+          schemaName={schema.name}
+          setSchemaName={(name) => {
+            const s = new Schema(name);
+            s.models = schema.models;
+            setSchema(s);
+          }}
           toggleUserWindow={fnUserWindow}
+          toggleSaveWindow={fnSaveWindow}
           generateSchema={async () => {
             const serialized = schema.toSerial();
             const res = await generatePrismaFromSchema(serialized);
@@ -121,6 +142,12 @@ export default function App() {
         />
         <Canvas schema={schema} onDragModel={onSelectModel} />
         <UserWindow hidden={!userWindow} close={() => setUserWindow(false)} />
+        <SaveSchema
+          hidden={!saveWindow}
+          close={() => setSaveWindow(false)}
+          userInfo={user}
+          schemaName={schema.name}
+        />
         <CreateEntity
           hidden={!createEntity}
           cancel={() => setCreateEntity(false)}

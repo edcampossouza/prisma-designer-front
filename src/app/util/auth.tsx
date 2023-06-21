@@ -1,6 +1,12 @@
 export type UserInfo = {
   email: string;
   token: string;
+  schemas?: SchemaInfo[];
+};
+
+export type SchemaInfo = {
+  id: number;
+  name: string;
 };
 
 export function storeUserInfo(data: UserInfo) {

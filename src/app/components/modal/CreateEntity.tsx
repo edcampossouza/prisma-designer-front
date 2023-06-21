@@ -31,7 +31,7 @@ export default function CreateEntity(props: Props) {
 
   return (
     <div
-      className={`fixed inset-0  w-fit h-fit mx-auto my-16 flex flex-col bg-gray-100 rounded-lg border-2 border-black ${
+      className={`fixed inset-0  w-fit h-fit mx-auto my-20 flex flex-col bg-gray-100 rounded-lg border-2 border-black ${
         props.hidden && "invisible"
       } p-2`}
     >
