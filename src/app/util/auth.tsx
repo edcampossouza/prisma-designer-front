@@ -22,6 +22,14 @@ export function getUserToken(): UserInfo | null {
   return null;
 }
 
+export function getAuthHeader() {
+  const token: string = getUserToken()?.token || "";
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 export function clearToken() {
   localStorage.removeItem("user-info");
 }

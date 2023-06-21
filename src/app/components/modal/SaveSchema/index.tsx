@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useContext } from "react";
 import { UserInfo } from "@/app/util/auth";
+import { UserContext } from "@/context/user.context";
+import { useSaveSchema, useGetSchemasIm } from "@/hooks/schema/useSchema";
 
 type Props = {
   hidden: boolean;
@@ -9,7 +11,20 @@ type Props = {
 };
 
 export default function SaveSchema(props: Props) {
+  const { notifyError } = useContext(UserContext);
   const { userInfo, schemaName } = props;
+  const { saveSchema, saveError, saveLoading } = useSaveSchema();
+  const { schemas, getSchemasError, schemasLoading, getSchemas } =
+    useGetSchemasIm();
+
+  async function save() {
+    try {
+      await saveSchema({ name: schemaName });
+      getSchemas();
+    } catch (error) {
+      notifyError(error);
+    }
+  }
 
   return (
     <div
@@ -21,17 +36,25 @@ export default function SaveSchema(props: Props) {
         <>
           <h3 className="text-lg text-center">{userInfo.email}</h3>
           <span className="font-mono">{schemaName}</span>
-          {userInfo.schemas && userInfo.schemas.length > 0 && (
+          {saveLoading ? (
+            <span className="text-center">saving...</span>
+          ) : (
+            <button className="font-mono" onClick={save}>
+              save
+            </button>
+          )}
+          {schemas && schemas.length > 0 && (
             <ul className="p-2">
               <h4>Your schemas:</h4>
-              {userInfo.schemas.map((schema) => (
-                <li className="font-mono" key={schema.id}>
-                  {schema.name}
-                </li>
-              ))}
+              {schemas &&
+                schemas.map((schema) => (
+                  <li className="font-mono" key={schema.id}>
+                    {schema.name}
+                  </li>
+                ))}
             </ul>
           )}
-          {(!userInfo.schemas || userInfo.schemas.length === 0) && (
+          {(!schemas || schemas.length === 0) && (
             <>
               <span>You don&apos;t have any schemas saved yet</span>
             </>
