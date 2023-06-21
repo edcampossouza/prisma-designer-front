@@ -16,6 +16,7 @@ type Props = {
   createField: Function;
   toggleUserWindow: Function;
   toggleSaveWindow: Function;
+  setTyping: (typing: boolean) => void;
   schemaName: string;
   setSchemaName: (name: string) => void;
   selectedModel: Model | null;
@@ -32,6 +33,10 @@ export default function MainMenu(props: Props) {
           className="font-mono"
           value={newSchemaName}
           onChange={(e) => setNewSchemaName(e.target.value)}
+          onFocus={() => {
+            props.setTyping(true);
+          }}
+          onBlur={() => props.setTyping(false)}
         />
         <button
           onClick={() => {

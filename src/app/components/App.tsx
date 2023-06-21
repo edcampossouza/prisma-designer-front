@@ -28,6 +28,7 @@ import { generatePrismaFromSchema } from "../services/schema-api";
 import SaveSchema from "./modal/SaveSchema";
 
 import { nanoid } from "nanoid";
+import { isAxiosError } from "axios";
 
 export type ReferenceOptions = {
   references: Model;
@@ -41,6 +42,8 @@ export default function App() {
   const [createField, setCreateField] = useState(false);
   const [userWindow, setUserWindow] = useState(false);
   const [saveWindow, setSaveWindow] = useState(false);
+  // to disable shortcuts while typing in input fields
+  const [typing, setTyping] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
   const [schemaText, setSchemaText] = useState("");
   const [schema, setSchema] = useState(new Schema(`unnamed-${nanoid(5)}`));
@@ -70,6 +73,7 @@ export default function App() {
         !createField &&
         !userWindow &&
         !saveWindow &&
+        !typing &&
         (event.key === "m" || event.key === "M")
       ) {
         fnCreateModel();
@@ -79,6 +83,7 @@ export default function App() {
         !createField &&
         !userWindow &&
         !saveWindow &&
+        !typing &&
         (event.key === "f" || event.key === "F")
       ) {
         fnCreateField();
@@ -89,7 +94,7 @@ export default function App() {
     return () => {
       document.removeEventListener("keypress", createMenuFunction);
     };
-  }, [createEntity, createField, userWindow, saveWindow]);
+  }, [createEntity, createField, userWindow, saveWindow, typing]);
 
   function fnCreateField() {
     setCreateField(true);
@@ -121,7 +126,7 @@ export default function App() {
 
   return (
     <div>
-      <UserContext.Provider value={{ user, setUser }}>
+      <UserContext.Provider value={{ user, setUser, notifyError: notify }}>
         <MainMenu
           createEntity={fnCreateModel}
           createField={fnCreateField}
@@ -134,6 +139,7 @@ export default function App() {
           }}
           toggleUserWindow={fnUserWindow}
           toggleSaveWindow={fnSaveWindow}
+          setTyping={(t: boolean) => setTyping(t)}
           generateSchema={async () => {
             const serialized = schema.toSerial();
             const res = await generatePrismaFromSchema(serialized);
@@ -224,8 +230,16 @@ function notify(error: any) {
           <HiLightningBolt />
         </div>
         <div className={styles.contentWrapper}>
-          <h1>Schema error</h1>
-          <p>{error.message}</p>
+          <h1>Error</h1>
+          <p>
+            {(() => {
+              if (isAxiosError(error)) {
+                return error.response?.data?.message || error.message;
+              } else {
+                return error.message;
+              }
+            })()}
+          </p>
         </div>
         <div className={styles.closeIcon} onClick={() => toast.dismiss(t.id)}>
           <MdOutlineClose />
