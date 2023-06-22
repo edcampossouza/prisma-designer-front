@@ -1,7 +1,11 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserInfo } from "@/app/util/auth";
 import { UserContext } from "@/context/user.context";
-import { useSaveSchema, useGetSchemasIm } from "@/hooks/schema/useSchema";
+import {
+  useSaveSchema,
+  useGetSchemasIm,
+  useGetSchema,
+} from "@/hooks/schema/useSchema";
 import { Schema } from "prismadesign-lib";
 
 type Props = {
@@ -18,6 +22,7 @@ export default function SaveSchema(props: Props) {
   const { saveSchema, saveError, saveLoading } = useSaveSchema();
   const { schemas, getSchemasError, schemasLoading, getSchemas } =
     useGetSchemasIm();
+  const { schema: fetchedSchema, getSchema, schemaLoading } = useGetSchema();
 
   async function save() {
     try {
@@ -27,6 +32,10 @@ export default function SaveSchema(props: Props) {
       notifyError(error);
     }
   }
+
+  useEffect(() => {
+    console.log(fetchedSchema);
+  }, [fetchedSchema]);
 
   return (
     <div
@@ -50,8 +59,19 @@ export default function SaveSchema(props: Props) {
               <h4>Your schemas:</h4>
               {schemas &&
                 schemas.map((schema) => (
-                  <li className="font-mono" key={schema.id}>
+                  <li
+                    className="font-mono flex justify-between w-full"
+                    key={schema.id}
+                  >
                     {schema.name}
+                    <button
+                      className="bg-green-300 hover:bg-green-500"
+                      onClick={() => {
+                        getSchema(schema.name);
+                      }}
+                    >
+                      load
+                    </button>
                   </li>
                 ))}
             </ul>
