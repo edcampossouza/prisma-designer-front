@@ -153,6 +153,7 @@ export default function App() {
           close={() => setSaveWindow(false)}
           userInfo={user}
           schemaName={schema.name}
+          schema={schema}
         />
         <CreateEntity
           hidden={!createEntity}

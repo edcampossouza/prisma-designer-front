@@ -2,11 +2,13 @@ import React, { useContext } from "react";
 import { UserInfo } from "@/app/util/auth";
 import { UserContext } from "@/context/user.context";
 import { useSaveSchema, useGetSchemasIm } from "@/hooks/schema/useSchema";
+import { Schema } from "prismadesign-lib";
 
 type Props = {
   hidden: boolean;
   close: Function;
   schemaName: string | undefined;
+  schema: Schema;
   userInfo?: UserInfo;
 };
 
@@ -19,7 +21,7 @@ export default function SaveSchema(props: Props) {
 
   async function save() {
     try {
-      await saveSchema({ name: schemaName });
+      await saveSchema(props.schema.toSerial());
       getSchemas();
     } catch (error) {
       notifyError(error);
