@@ -1,4 +1,5 @@
 import useAsync from "../useAsync";
+import { SerializedSchema } from "prismadesign-lib";
 import * as schemaApi from "@/app/services/schema-api";
 
 export function useSaveSchema() {
@@ -15,6 +16,7 @@ type schema = {
   name: string;
   id: number;
 };
+
 export function useGetSchemasIm() {
   const _useGetSchemas = useAsync<schema[]>(schemaApi.getSchemas, true);
 
@@ -23,5 +25,16 @@ export function useGetSchemasIm() {
     getSchemasError: _useGetSchemas.error,
     schemasLoading: _useGetSchemas.loading,
     getSchemas: _useGetSchemas.act,
+  };
+}
+
+export function useGetSchema() {
+  const _useGetSchema = useAsync<SerializedSchema>(schemaApi.getSchema, false);
+
+  return {
+    schema: _useGetSchema.data,
+    getSchemaError: _useGetSchema.error,
+    schemaLoading: _useGetSchema.loading,
+    getSchema: _useGetSchema.act,
   };
 }
