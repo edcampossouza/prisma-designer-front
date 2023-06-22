@@ -6,7 +6,7 @@ import {
   useGetSchemasIm,
   useGetSchema,
 } from "@/hooks/schema/useSchema";
-import { Schema } from "prismadesign-lib";
+import { Schema, deserializeSchema } from "prismadesign-lib";
 
 type Props = {
   hidden: boolean;
@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function SaveSchema(props: Props) {
-  const { notifyError } = useContext(UserContext);
+  const { notifyError, setSchema: loadSchema } = useContext(UserContext);
   const { userInfo, schemaName } = props;
   const { saveSchema, saveError, saveLoading } = useSaveSchema();
   const { schemas, getSchemasError, schemasLoading, getSchemas } =
@@ -34,7 +34,15 @@ export default function SaveSchema(props: Props) {
   }
 
   useEffect(() => {
-    console.log(fetchedSchema);
+    try {
+      if (fetchedSchema) {
+        const deserialized = deserializeSchema(fetchedSchema);
+        loadSchema(deserialized);
+        props.close();
+      }
+    } catch (error) {
+      notifyError(error);
+    }
   }, [fetchedSchema]);
 
   return (

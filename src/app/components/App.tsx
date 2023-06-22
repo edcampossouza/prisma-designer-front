@@ -126,7 +126,14 @@ export default function App() {
 
   return (
     <div>
-      <UserContext.Provider value={{ user, setUser, notifyError: notify }}>
+      <UserContext.Provider
+        value={{
+          user,
+          setUser,
+          notifyError: notify,
+          setSchema: setSchema,
+        }}
+      >
         <MainMenu
           createEntity={fnCreateModel}
           createField={fnCreateField}
