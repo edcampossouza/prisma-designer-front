@@ -4,12 +4,13 @@ import { useXarrow } from "react-xarrows";
 import DataField from "./DataField";
 import { GraphicContext } from "@/context/graphic.context";
 
-import { Model } from "prismadesign-lib";
+import { Field, Model } from "prismadesign-lib";
 import { GrModel } from "../App";
 
 type Props = {
   model: GrModel;
   onDragModel: (model: Model) => void;
+  onDeleteField: (field: Field) => void;
 };
 
 export default function DataModel(props: Props) {
@@ -42,6 +43,7 @@ export default function DataModel(props: Props) {
                 key={field.name}
                 field={field}
                 xarrow_id={`${name}#${field.name}`}
+                onDelete={() => props.onDeleteField(field)}
               />
             ))}
           </tbody>
