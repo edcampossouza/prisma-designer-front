@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import Draggable, { DraggableEvent, DraggableData } from "react-draggable";
 import { useXarrow } from "react-xarrows";
+import { AiFillDelete } from "react-icons/ai";
+
 import DataField from "./DataField";
 import { GraphicContext } from "@/context/graphic.context";
 
@@ -10,6 +12,7 @@ import { GrModel } from "../App";
 type Props = {
   model: GrModel;
   onDragModel: (model: Model) => void;
+  onDelete: Function;
   onDeleteField: (field: Field) => void;
 };
 
@@ -35,7 +38,13 @@ export default function DataModel(props: Props) {
           selected ? "border-black border-2" : ""
         }  bg-slate-200 cursor-move rounded p-2 `}
       >
-        <div className="text-lg w-full border-b-2 border-black">{name}</div>
+        <div className="text-lg w-full border-b-2 border-black flex justify-between items-center hover:cursor-pointer">
+          {name}
+          <AiFillDelete
+            className="text-red-500 text-2xl"
+            onClick={() => props.onDelete()}
+          />
+        </div>
         <table className="w-full">
           <tbody className="w-full">
             {fields.map((field) => (
