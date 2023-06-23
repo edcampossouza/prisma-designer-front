@@ -14,19 +14,19 @@ export default function Canvas(props: Props) {
       <Xwrapper>
         {schema.models.map((model) => (
           <DataModel
-            key={model.name}
+            key={`${schema.name}##${model.name}`}
             model={model}
             onDragModel={props.onDragModel}
           />
         ))}
         {/* <DataModel fields={[]} name={model.name} /> */}
-        <ArrowsComponent models={schema.models} />
+        <ArrowsComponent models={schema.models} prefix={schema.name} />
       </Xwrapper>
     </main>
   );
 }
 
-function ArrowsComponent(props: { models: Model[] }) {
+function ArrowsComponent(props: { models: Model[]; prefix: string }) {
   return (
     <>
       {props.models
@@ -37,7 +37,7 @@ function ArrowsComponent(props: { models: Model[] }) {
           const end = `${field.references?.referenced.model.name}#${field.references?.referenced.name}`;
           return (
             <Xarrow
-              key={`${start}##${end}`}
+              key={`${props.prefix}#${start}#${end}`}
               start={start}
               end={end}
               divContainerStyle={{ zIndex: 1000000, opacity: 0.5 }}
