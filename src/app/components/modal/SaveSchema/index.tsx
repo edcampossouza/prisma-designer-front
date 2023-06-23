@@ -19,7 +19,7 @@ type Props = {
 
 export default function SaveSchema(props: Props) {
   const { notifyError, setSchema: loadSchema } = useContext(UserContext);
-  const { positions } = useContext(GraphicContext);
+  const { positions, setPositions } = useContext(GraphicContext);
   const { userInfo, schemaName } = props;
   const { saveSchema, saveError, saveLoading } = useSaveSchema();
   const { schemas, getSchemasError, schemasLoading, getSchemas } =
@@ -47,6 +47,17 @@ export default function SaveSchema(props: Props) {
     try {
       if (fetchedSchema) {
         const deserialized = deserializeSchema(fetchedSchema);
+        if (fetchedSchema.coordinates) {
+          const _positions = fetchedSchema.coordinates.reduce(
+            (p: Record<string, { x: number; y: number }>, c) => {
+              const res = p;
+              res[c.name] = { x: c.x, y: c.y };
+              return res;
+            },
+            {}
+          );
+          setPositions(_positions);
+        }
         loadSchema(deserialized);
         props.close();
       }

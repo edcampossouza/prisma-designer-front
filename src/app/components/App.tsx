@@ -6,10 +6,7 @@ import UserWindow from "./modal/User";
 import CreateEntity from "./modal/CreateEntity";
 import CreateField from "./modal/CreateField";
 import { UserContext } from "@/context/user.context";
-import {
-  GraphicContext,
-  PositionsRecord,
-} from "@/context/graphic.context";
+import { GraphicContext, PositionsRecord } from "@/context/graphic.context";
 import { UserInfo, getUserToken } from "../util/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineClose } from "react-icons/md";
@@ -151,6 +148,7 @@ export default function App() {
               newPos[name] = pos;
               setGraphicInfo(newPos);
             },
+            setPositions: setGraphicInfo,
           }}
         >
           <MainMenu

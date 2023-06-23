@@ -29,7 +29,11 @@ export function useGetSchemasIm() {
 }
 
 export function useGetSchema() {
-  const _useGetSchema = useAsync<SerializedSchema>(schemaApi.getSchema, false);
+  const _useGetSchema = useAsync<
+    SerializedSchema & {
+      coordinates?: { x: number; y: number; name: string }[];
+    }
+  >(schemaApi.getSchema, false);
 
   return {
     schema: _useGetSchema.data,
