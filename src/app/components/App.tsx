@@ -49,10 +49,7 @@ export default function App() {
   const [schemaText, setSchemaText] = useState("");
   const [schema, setSchema] = useState(new Schema(`unnamed-${nanoid(5)}`));
 
-  const [graphicInfo, setGraphicInfo] = useState<PositionsRecord>({
-    User: { x: 100, y: 20 },
-    Post: { x: 200, y: 300 },
-  });
+  const [graphicInfo, setGraphicInfo] = useState<PositionsRecord>({});
   const [user, setUser] = useState<UserInfo>();
 
   function readUserInfo() {
