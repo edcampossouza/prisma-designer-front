@@ -5,9 +5,11 @@ export type PositionsRecord = Record<string, { x: number; y: number }>;
 export type GraphicContextType = {
   positions: PositionsRecord;
   addPosition: (name: string, { x, y }: { x: number; y: number }) => void;
+  setPositions: React.Dispatch<React.SetStateAction<PositionsRecord>>;
 };
 
 export const GraphicContext = createContext<GraphicContextType>({
   positions: {},
   addPosition: () => {},
+  setPositions: () => {},
 });
