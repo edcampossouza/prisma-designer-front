@@ -21,6 +21,14 @@ export default function Canvas(props: Props) {
             key={`${schema.name}##${model.name}`}
             model={model}
             onDragModel={props.onDragModel}
+            onDelete={() => {
+              try {
+                schema.deleteModel(model);
+              } catch (error) {
+                notifyError(error);
+              }
+              update();
+            }}
             onDeleteField={(field) => {
               try {
                 field.model.removeField(field);
