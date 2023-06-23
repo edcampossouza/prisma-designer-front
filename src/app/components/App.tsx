@@ -6,6 +6,10 @@ import UserWindow from "./modal/User";
 import CreateEntity from "./modal/CreateEntity";
 import CreateField from "./modal/CreateField";
 import { UserContext } from "@/context/user.context";
+import {
+  GraphicContext,
+  PositionsRecord,
+} from "@/context/graphic.context";
 import { UserInfo, getUserToken } from "../util/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { MdOutlineClose } from "react-icons/md";
@@ -47,6 +51,11 @@ export default function App() {
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
   const [schemaText, setSchemaText] = useState("");
   const [schema, setSchema] = useState(new Schema(`unnamed-${nanoid(5)}`));
+
+  const [graphicInfo, setGraphicInfo] = useState<PositionsRecord>({
+    User: { x: 100, y: 20 },
+    Post: { x: 200, y: 300 },
+  });
   const [user, setUser] = useState<UserInfo>();
 
   function readUserInfo() {
@@ -134,89 +143,100 @@ export default function App() {
           setSchema: setSchema,
         }}
       >
-        <MainMenu
-          createEntity={fnCreateModel}
-          createField={fnCreateField}
-          selectedModel={selectedModel}
-          schemaName={schema.name}
-          setSchemaName={(name) => {
-            const s = new Schema(name);
-            s.models = schema.models;
-            setSchema(s);
+        <GraphicContext.Provider
+          value={{
+            positions: graphicInfo,
+            addPosition: (name, pos) => {
+              const newPos = { ...graphicInfo };
+              newPos[name] = pos;
+              setGraphicInfo(newPos);
+            },
           }}
-          toggleUserWindow={fnUserWindow}
-          toggleSaveWindow={fnSaveWindow}
-          setTyping={(t: boolean) => setTyping(t)}
-          generateSchema={async () => {
-            const serialized = schema.toSerial();
-            const res = await generatePrismaFromSchema(serialized);
-            setSchemaText(res);
-          }}
-        />
-        <Canvas schema={schema} onDragModel={onSelectModel} />
-        <UserWindow hidden={!userWindow} close={() => setUserWindow(false)} />
-        <SaveSchema
-          hidden={!saveWindow}
-          close={() => setSaveWindow(false)}
-          userInfo={user}
-          schemaName={schema.name}
-          schema={schema}
-        />
-        <CreateEntity
-          hidden={!createEntity}
-          cancel={() => setCreateEntity(false)}
-          submit={(name: string, createId?: boolean) => {
-            try {
-              const model = schema.addModel(name);
-              if (createId) {
-                model.addField("id", IntType, "autoincrement()", [
-                  IdFieldAttribute,
-                  DefaultFieldAttribute,
-                ]);
-              }
-              onSelectModel(model);
-            } catch (error) {
-              notify(error);
-            }
-            setCreateEntity(false);
-          }}
-        />
-        <CreateField
-          hidden={!createField}
-          schema={schema}
-          cancel={() => setCreateField(false)}
-          submit={(
-            name: string,
-            type: DataType,
-            fieldAttributes: FieldAttribute[],
-            defaultValue?: string,
-            refOptions?: ReferenceOptions
-          ) => {
-            try {
-              if (selectedModel) {
-                const field = selectedModel.addField(
-                  name,
-                  type,
-                  defaultValue,
-                  fieldAttributes
-                );
-                if (refOptions) {
-                  const idField = refOptions.references.getIdField();
-                  if (idField === null) {
-                    selectedModel.removeField(field);
-                    throw new Error(
-                      `Cannot set reference to ${refOptions.references.name}: model has no id`
-                    );
-                  }
-                  field.setReference(refOptions.references.fields[0]);
+        >
+          <MainMenu
+            createEntity={fnCreateModel}
+            createField={fnCreateField}
+            selectedModel={selectedModel}
+            schemaName={schema.name}
+            setSchemaName={(name) => {
+              const s = new Schema(name);
+              s.models = schema.models;
+              setSchema(s);
+            }}
+            toggleUserWindow={fnUserWindow}
+            toggleSaveWindow={fnSaveWindow}
+            setTyping={(t: boolean) => setTyping(t)}
+            generateSchema={async () => {
+              const serialized = schema.toSerial();
+              const res = await generatePrismaFromSchema(serialized);
+              setSchemaText(res);
+            }}
+          />
+          <Canvas schema={schema} onDragModel={onSelectModel} />
+          <UserWindow hidden={!userWindow} close={() => setUserWindow(false)} />
+          <SaveSchema
+            hidden={!saveWindow}
+            close={() => setSaveWindow(false)}
+            userInfo={user}
+            schemaName={schema.name}
+            schema={schema}
+          />
+          <CreateEntity
+            hidden={!createEntity}
+            cancel={() => setCreateEntity(false)}
+            submit={(name: string, createId?: boolean) => {
+              try {
+                const model = schema.addModel(name);
+                if (createId) {
+                  model.addField("id", IntType, "autoincrement()", [
+                    IdFieldAttribute,
+                    DefaultFieldAttribute,
+                  ]);
                 }
+                onSelectModel(model);
+              } catch (error) {
+                notify(error);
               }
-            } catch (error) {
-              notify(error);
-            }
-            setCreateField(false);
-          }}
-        />
+              setCreateEntity(false);
+            }}
+          />
+          <CreateField
+            hidden={!createField}
+            schema={schema}
+            cancel={() => setCreateField(false)}
+            submit={(
+              name: string,
+              type: DataType,
+              fieldAttributes: FieldAttribute[],
+              defaultValue?: string,
+              refOptions?: ReferenceOptions
+            ) => {
+              try {
+                if (selectedModel) {
+                  const field = selectedModel.addField(
+                    name,
+                    type,
+                    defaultValue,
+                    fieldAttributes
+                  );
+                  if (refOptions) {
+                    const idField = refOptions.references.getIdField();
+                    if (idField === null) {
+                      selectedModel.removeField(field);
+                      throw new Error(
+                        `Cannot set reference to ${refOptions.references.name}: model has no id`
+                      );
+                    }
+                    field.setReference(refOptions.references.fields[0]);
+                  }
+                }
+              } catch (error) {
+                notify(error);
+              }
+              setCreateField(false);
+            }}
+          />
+        </GraphicContext.Provider>
 
         <Toaster />
         <SchemaPanel formattedText={schemaText} />

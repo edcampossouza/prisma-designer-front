@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { UserInfo } from "@/app/util/auth";
 import { UserContext } from "@/context/user.context";
+import { GraphicContext } from "@/context/graphic.context";
 import {
   useSaveSchema,
   useGetSchemasIm,
@@ -18,6 +19,7 @@ type Props = {
 
 export default function SaveSchema(props: Props) {
   const { notifyError, setSchema: loadSchema } = useContext(UserContext);
+  const { positions } = useContext(GraphicContext);
   const { userInfo, schemaName } = props;
   const { saveSchema, saveError, saveLoading } = useSaveSchema();
   const { schemas, getSchemasError, schemasLoading, getSchemas } =
@@ -26,7 +28,15 @@ export default function SaveSchema(props: Props) {
 
   async function save() {
     try {
-      await saveSchema(props.schema.toSerial());
+      const serializedSchema = props.schema.toSerial();
+      const coords: { name: string; x: number; y: number }[] = Object.keys(
+        positions
+      ).map((o) => ({
+        name: o,
+        x: positions[o].x,
+        y: positions[o].y,
+      }));
+      await saveSchema({ ...serializedSchema, coordinates: coords });
       getSchemas();
     } catch (error) {
       notifyError(error);
