@@ -1,6 +1,8 @@
 "use client";
-import Xarrow, { Xwrapper } from "react-xarrows";
+import { useContext } from "react";
+import Xarrow, { Xwrapper, useXarrow } from "react-xarrows";
 import DataModel from "./prisma-objects/DataModel";
+import { UserContext } from "@/context/user.context";
 import { Schema, Model, Field } from "prismadesign-lib";
 
 type Props = {
@@ -9,6 +11,8 @@ type Props = {
 };
 export default function Canvas(props: Props) {
   const { schema } = props;
+  const { notifyError } = useContext(UserContext);
+  const update = useXarrow();
   return (
     <main>
       <Xwrapper>
@@ -17,6 +21,14 @@ export default function Canvas(props: Props) {
             key={`${schema.name}##${model.name}`}
             model={model}
             onDragModel={props.onDragModel}
+            onDeleteField={(field) => {
+              try {
+                field.model.removeField(field);
+              } catch (error) {
+                notifyError(error);
+              }
+              update();
+            }}
           />
         ))}
         {/* <DataModel fields={[]} name={model.name} /> */}

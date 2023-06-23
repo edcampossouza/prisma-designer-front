@@ -24,6 +24,7 @@ import {
   IdFieldAttribute,
   FieldAttribute,
   DefaultFieldAttribute,
+  Field,
 } from "prismadesign-lib";
 import { generatePrismaFromSchema } from "../services/schema-api";
 import SaveSchema from "./modal/SaveSchema";
@@ -124,8 +125,6 @@ export default function App() {
     setUserWindow(false);
     setSaveWindow(true);
   }
-
-  console.log(user);
 
   return (
     <div>
