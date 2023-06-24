@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --model-color: #569cd6;
+  --field-color: #9cdcfe;
+  --type-color: #4ec9b0;
+  --attribute-color: #dcdcaa;
+
+  --text-main: #cccccc;
+  --code-bd: #1f1f1f;
+  --btn-bg: #3f3f3f;
+  --btn-bg-hov: #2f2f2f;
+}
