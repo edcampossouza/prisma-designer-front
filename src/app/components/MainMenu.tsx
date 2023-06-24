@@ -1,14 +1,11 @@
 "use client";
 import {
-  AiFillPlusCircle,
   AiOutlineSend,
-  AiOutlineUser,
-  AiFillSave,
-  AiFillCheckSquare,
-  AiFillCloseCircle,
+  AiOutlineSave,
   AiOutlinePlusCircle,
 } from "react-icons/ai";
 import { SiPrisma } from "react-icons/si";
+import { FiUserCheck, FiUserPlus } from "react-icons/fi";
 import { Model } from "prismadesign-lib";
 import { useContext, useState } from "react";
 import { UserContext } from "@/context/user.context";
@@ -18,7 +15,6 @@ type Props = {
   createField: Function;
   toggleUserWindow: Function;
   toggleSaveWindow: Function;
-  setTyping: (typing: boolean) => void;
   schemaName: string;
   setSchemaName: (name: string) => void;
   selectedModel: Model | null;
@@ -26,41 +22,7 @@ type Props = {
 };
 export default function MainMenu(props: Props) {
   const { user } = useContext(UserContext);
-  const [newSchemaName, setNewSchemaName] = useState(props.schemaName);
 
-  const content = (
-    <>
-      <div className="w-full px-4 flex ">
-        Schema Name:{" "}
-        <input
-          className="font-mono"
-          value={newSchemaName}
-          onChange={(e) => setNewSchemaName(e.target.value)}
-          onFocus={() => {
-            props.setTyping(true);
-          }}
-          onBlur={() => props.setTyping(false)}
-        />
-        <button
-          onClick={() => {
-            props.setSchemaName(newSchemaName);
-          }}
-          disabled={newSchemaName === props.schemaName}
-          className="hover:cursor-pointer disabled:text-gray-700 text-green-500"
-        >
-          <AiFillCheckSquare className="w-8 h-8 rounded-xl" />
-        </button>
-        <button
-          onClick={() => {
-            setNewSchemaName(props.schemaName);
-          }}
-          className="hover:cursor-pointer   text-red-500"
-        >
-          <AiFillCloseCircle className="w-8 h-8 rounded-xl" />
-        </button>
-      </div>
-    </>
-  );
   return (
     <header className="bg-code-bd flex justify-between text-text-main">
       <nav className="flex items-center justify-between p-2 lg:px-8">
@@ -94,23 +56,34 @@ export default function MainMenu(props: Props) {
             Generate
             <AiOutlineSend className="text-white text-lg " />
           </div>
+          {user && (
+            <div
+              className="flex flex-col items-center bg-btn-bg text-text-main hover:cursor-pointer hover:bg-btn-bg-hov rounded-md w-18"
+              onClick={() => props.toggleSaveWindow()}
+            >
+              Load/Save
+              <AiOutlineSave className="text-white text-lg " />
+            </div>
+          )}
           <div
-            className=" flex flex-col items-center hover:cursor-pointer"
+            className={`flex flex-col items-center text-text-main hover:cursor-pointer rounded-md w-16 ${
+              user
+                ? "bg-confirm hover:bg-confirm-hov"
+                : "bg-btn-bg hover:bg-btn-bg-hov"
+            }`}
             onClick={() => props.toggleUserWindow()}
           >
-            <AiOutlineUser className="bg-green-400 rounded-md text-white text-lg  w-12" />
-            <span className="text-center">
-              {user ? <span>{user.email}</span> : "sign in"}
-            </span>
-          </div>
-          <div className="  flex flex-col items-center">
-            <AiFillSave
-              onClick={() => props.toggleSaveWindow()}
-              className="bg-green-400 rounded-md text-white text-lg hover:cursor-pointer w-12"
-            />
-            <span className="text-center">
-              {user ? "Save" : "You need to be logged in to save your work"}
-            </span>
+            {user ? (
+              <>
+                <span className="text-center">Profile</span>
+                <FiUserCheck className="text-white text-lg" />
+              </>
+            ) : (
+              <>
+                <span className="text-center">sign in</span>
+                <FiUserPlus className="text-white text-lg" />
+              </>
+            )}
           </div>
         </div>
       </menu>

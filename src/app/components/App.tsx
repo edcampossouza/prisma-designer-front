@@ -159,7 +159,6 @@ export default function App() {
             }}
             toggleUserWindow={fnUserWindow}
             toggleSaveWindow={fnSaveWindow}
-            setTyping={(t: boolean) => setTyping(t)}
             generateSchema={async () => {
               const serialized = schema.toSerial();
               const res = await generatePrismaFromSchema(serialized);
