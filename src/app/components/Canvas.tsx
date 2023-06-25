@@ -26,7 +26,6 @@ export default function Canvas(props: Props) {
           minHeight: `${y_bound + 500}px`,
         }}
       >
-        {x_bound} - {y_bound}
         {schema.models.map((model) => (
           <DataModel
             key={`${schema.name}##${model.name}`}
