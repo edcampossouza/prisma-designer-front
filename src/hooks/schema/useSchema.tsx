@@ -17,8 +17,8 @@ type schema = {
   id: number;
 };
 
-export function useGetSchemasIm() {
-  const _useGetSchemas = useAsync<schema[]>(schemaApi.getSchemas, true);
+export function useGetSchemas(immediate: boolean = true) {
+  const _useGetSchemas = useAsync<schema[]>(schemaApi.getSchemas, immediate);
 
   return {
     schemas: _useGetSchemas.data as unknown as schema[],

@@ -1,34 +1,44 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 import { UserInfo } from "@/app/util/auth";
 import { UserContext } from "@/context/user.context";
 import { GraphicContext } from "@/context/graphic.context";
 import {
   useSaveSchema,
-  useGetSchemasIm,
+  useGetSchemas,
   useGetSchema,
 } from "@/hooks/schema/useSchema";
 import { Schema, deserializeSchema } from "prismadesign-lib";
 
+import { loadingSpinner } from "../../spinner/spinner";
+
 type Props = {
   hidden: boolean;
   close: Function;
-  schemaName: string | undefined;
   schema: Schema;
+  setIsTyping: (typing: boolean) => void;
   userInfo?: UserInfo;
 };
 
 export default function SaveSchema(props: Props) {
-  const { notifyError, setSchema: loadSchema } = useContext(UserContext);
+  const {
+    notifyError,
+    setSchema: loadSchema,
+    setUser,
+    user: userInfo,
+  } = useContext(UserContext);
   const { positions, setPositions } = useContext(GraphicContext);
-  const { userInfo, schemaName } = props;
-  const { saveSchema, saveError, saveLoading } = useSaveSchema();
-  const { schemas, getSchemasError, schemasLoading, getSchemas } =
-    useGetSchemasIm();
+  const { saveSchema, saveLoading } = useSaveSchema();
+  const { schemas, schemasLoading, getSchemas } =
+    useGetSchemas(false);
   const { schema: fetchedSchema, getSchema, schemaLoading } = useGetSchema();
+
+  const [newSchemaName, setNewSchemaName] = useState(props.schema.name);
 
   async function save() {
     try {
       const serializedSchema = props.schema.toSerial();
+      serializedSchema.name = newSchemaName;
       const coords: { name: string; x: number; y: number }[] = Object.keys(
         positions
       ).map((o) => ({
@@ -42,6 +52,20 @@ export default function SaveSchema(props: Props) {
       notifyError(error);
     }
   }
+
+  async function loadSchemas() {
+    try {
+      if (userInfo) {
+        await getSchemas();
+      }
+    } catch (error) {
+      setUser(undefined);
+    }
+  }
+
+  useEffect(() => {
+    loadSchemas();
+  }, [userInfo]);
 
   useEffect(() => {
     try {
@@ -68,14 +92,31 @@ export default function SaveSchema(props: Props) {
 
   return (
     <div
-      className={`fixed inset-0  w-80 h-fit mx-auto my-20 flex flex-col bg-gray-100 rounded-lg border-2 border-black ${
+      className={`fixed inset-0  w-80 h-fit max-h-[50vh] mx-auto my-20 p-4 flex flex-col bg-code-bd text-text-main rounded-lg ${
         props.hidden && "invisible"
       }`}
     >
+      <AiOutlineCloseCircle
+        className="right-2 absolute text-2xl hover:cursor-pointer"
+        onClick={() => props.close()}
+      />
       {userInfo ? (
         <>
-          <h3 className="text-lg text-center">{userInfo.email}</h3>
-          <span className="font-mono">{schemaName}</span>
+          <p className="text-lg flex justify-center items-center">
+            <span className="text-sm overflow-auto">{userInfo.email}</span>
+          </p>
+          <label className="text-text-main bg-btn-bg">
+            schema:
+            <input
+              className="font-mono text-text-main bg-btn-bg ml-1"
+              value={newSchemaName}
+              onChange={(e) => setNewSchemaName(e.target.value)}
+              onFocus={() => {
+                props.setIsTyping(true);
+              }}
+              onBlur={() => props.setIsTyping(false)}
+            />
+          </label>
           {saveLoading ? (
             <span className="text-center">saving...</span>
           ) : (
@@ -83,8 +124,9 @@ export default function SaveSchema(props: Props) {
               save
             </button>
           )}
-          {schemas && schemas.length > 0 && (
-            <ul className="p-2">
+          {schemasLoading && <div className="mx-auto">{loadingSpinner}</div>}
+          {!schemaLoading && schemas && schemas.length > 0 && (
+            <ul className="p-2 overflow-y-auto">
               <h4>Your schemas:</h4>
               {schemas &&
                 schemas.map((schema) => (
@@ -94,7 +136,7 @@ export default function SaveSchema(props: Props) {
                   >
                     {schema.name}
                     <button
-                      className="bg-green-300 hover:bg-green-500"
+                      className="bg-btn-bg hover:bg-btn-bg-hov rounded-md"
                       onClick={() => {
                         getSchema(schema.name);
                       }}
@@ -105,7 +147,7 @@ export default function SaveSchema(props: Props) {
                 ))}
             </ul>
           )}
-          {(!schemas || schemas.length === 0) && (
+          {(!schemas || schemas.length === 0) && !schemasLoading && (
             <>
               <span>You don&apos;t have any schemas saved yet</span>
             </>

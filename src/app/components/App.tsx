@@ -51,19 +51,12 @@ export default function App() {
   const [schema, setSchema] = useState(new Schema(`unnamed-${nanoid(5)}`));
 
   const [graphicInfo, setGraphicInfo] = useState<PositionsRecord>({});
+
   const [user, setUser] = useState<UserInfo>();
 
   function readUserInfo() {
     const data = getUserToken();
     if (data) setUser(data);
-  }
-
-  function onSelectModel(model: GrModel) {
-    setSelectedModel(model);
-    schema.models.forEach((m: GrModel) => {
-      delete m.selected;
-    });
-    model.selected = true;
   }
 
   useEffect(() => {
@@ -99,6 +92,14 @@ export default function App() {
       document.removeEventListener("keypress", createMenuFunction);
     };
   }, [createEntity, createField, userWindow, saveWindow, typing]);
+
+  function onSelectModel(model: GrModel) {
+    setSelectedModel(model);
+    schema.models.forEach((m: GrModel) => {
+      delete m.selected;
+    });
+    model.selected = true;
+  }
 
   function fnCreateField() {
     setCreateField(true);
@@ -171,7 +172,7 @@ export default function App() {
             hidden={!saveWindow}
             close={() => setSaveWindow(false)}
             userInfo={user}
-            schemaName={schema.name}
+            setIsTyping={(t: boolean) => setTyping(t)}
             schema={schema}
           />
           <CreateEntity
