@@ -6,10 +6,7 @@ export async function signUp(email: string, password: string) {
   return response;
 }
 
-export async function signIn(
-  email: string,
-  password: string
-): Promise<UserInfo> {
+export async function signIn(email: string, password: string) {
   const response = await api.post("/auth/sign-in", { password, email });
-  return response as unknown as UserInfo;
+  return response;
 }
