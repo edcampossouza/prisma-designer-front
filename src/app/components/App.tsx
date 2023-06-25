@@ -51,6 +51,8 @@ export default function App() {
   const [schema, setSchema] = useState(new Schema(`unnamed-${nanoid(5)}`));
 
   const [graphicInfo, setGraphicInfo] = useState<PositionsRecord>({});
+  const [xBound, setXBound] = useState(0);
+  const [yBound, setYBound] = useState(0);
 
   const [user, setUser] = useState<UserInfo>();
 
@@ -144,8 +146,20 @@ export default function App() {
               const newPos = { ...graphicInfo };
               newPos[name] = pos;
               setGraphicInfo(newPos);
+              const max_x = Math.max(
+                ...Object.keys(newPos).map((name: string) => newPos[name].x),
+                0
+              );
+              const max_y = Math.max(
+                ...Object.keys(newPos).map((name: string) => newPos[name].y),
+                0
+              );
+              setXBound(max_x);
+              setYBound(max_y);
             },
             setPositions: setGraphicInfo,
+            x_bound: xBound,
+            y_bound: yBound,
           }}
         >
           <MainMenu

@@ -1,9 +1,10 @@
 "use client";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Xarrow, { Xwrapper, useXarrow } from "react-xarrows";
 import DataModel from "./prisma-objects/DataModel";
 import { UserContext } from "@/context/user.context";
 import { Schema, Model, Field } from "prismadesign-lib";
+import { GraphicContext } from "@/context/graphic.context";
 
 type Props = {
   schema: Schema;
@@ -12,10 +13,20 @@ type Props = {
 export default function Canvas(props: Props) {
   const { schema } = props;
   const { notifyError } = useContext(UserContext);
+  const { x_bound, y_bound } = useContext(GraphicContext);
+
+  console.log(x_bound, y_bound);
   const update = useXarrow();
   return (
-    <main>
-      <Xwrapper>
+    <Xwrapper>
+      <main
+        className={`bg-btn-bg w-screen h-screen overflow-auto`}
+        style={{
+          minWidth: `${x_bound + 500}px`,
+          minHeight: `${y_bound + 500}px`,
+        }}
+      >
+        {x_bound} - {y_bound}
         {schema.models.map((model) => (
           <DataModel
             key={`${schema.name}##${model.name}`}
@@ -41,8 +52,8 @@ export default function Canvas(props: Props) {
         ))}
         {/* <DataModel fields={[]} name={model.name} /> */}
         <ArrowsComponent models={schema.models} prefix={schema.name} />
-      </Xwrapper>
-    </main>
+      </main>
+    </Xwrapper>
   );
 }
 

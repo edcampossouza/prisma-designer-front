@@ -23,6 +23,7 @@ export default function DataModel(props: Props) {
   const updateArrows = useXarrow();
   return (
     <Draggable
+      bounds="parent"
       defaultPosition={defaultPos}
       onStop={(_event: DraggableEvent, data: DraggableData) => {
         addPosition(props.model.name, { x: data.x, y: data.y });
