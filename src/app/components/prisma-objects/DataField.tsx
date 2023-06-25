@@ -1,5 +1,5 @@
 import { Field } from "prismadesign-lib";
-import { AiFillDelete } from "react-icons/ai";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 export default function DataField(props: {
   field: Field;
@@ -8,11 +8,11 @@ export default function DataField(props: {
 }) {
   return (
     <tr className="text-sm font-mono" id={props.xarrow_id}>
-      <td className="pr-1">{props.field.name}</td>
-      <td className="px-1">{props.field.type.name}</td>
-      <td className="pl-1">{attributesToString(props.field)}</td>
+      <td className="pr-1 text-field-color">{props.field.name}</td>
+      <td className="px-1 text-type-color">{props.field.type.name}</td>
+      <td className="pl-1 text-attribute-color">{attributesToString(props.field)}</td>
       <td>
-        <AiFillDelete
+        <AiOutlineCloseCircle
           className="text-red-500 text-lg hover:cursor-pointer"
           onClick={() => {
             props.onDelete();
