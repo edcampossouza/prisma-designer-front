@@ -32,12 +32,13 @@ export default function User(props: Props) {
   let component;
   if (user) {
     component = (
-      <h3>
-        {user.email} logged in
-        <div>
-          <button onClick={logout}>Logout</button>
+      <div className="bg-code-bd text-text-main p-2">
+        <h3 className="text-center">Signed in as:</h3>
+        <h3 className="text-center">{user.email}</h3>
+        <div className="flex justify-end">
+          <button className="bg-btn-bg hover:bg-btn-bg-hov p-2 rounded-md" onClick={logout}>Logout</button>
         </div>
-      </h3>
+      </div>
     );
   } else {
     component =

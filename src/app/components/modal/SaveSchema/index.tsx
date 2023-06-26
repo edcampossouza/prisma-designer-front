@@ -136,7 +136,7 @@ export default function SaveSchema(props: Props) {
                   >
                     {schema.name}
                     <button
-                      className="bg-btn-bg hover:bg-btn-bg-hov rounded-md"
+                      className="bg-btn-bg hover:bg-btn-bg-hov rounded-md p-1"
                       onClick={() => {
                         getSchema(schema.name);
                       }}
