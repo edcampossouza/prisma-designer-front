@@ -70,7 +70,7 @@ function ArrowsComponent(props: { models: Model[]; prefix: string }) {
               key={`${props.prefix}#${start}#${end}`}
               start={start}
               end={end}
-              divContainerStyle={{ zIndex: 1000000, opacity: 0.5 }}
+              divContainerStyle={{ zIndex: 40, opacity: 0.5 }}
             />
           );
         })}

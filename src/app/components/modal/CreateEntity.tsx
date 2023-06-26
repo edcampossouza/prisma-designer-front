@@ -33,7 +33,7 @@ export default function CreateEntity(props: Props) {
     <div
       className={`fixed inset-0  w-fit h-fit mx-auto my-20 flex flex-col bg-code-bd text-text-main rounded-lg   ${
         props.hidden && "invisible"
-      } p-2`}
+      } p-2 z-50`}
     >
       <table>
         <tbody>

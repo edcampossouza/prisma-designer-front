@@ -58,7 +58,7 @@ export default function User(props: Props) {
   }
   return (
     <div
-      className={`fixed inset-0  w-80 h-fit mx-auto my-20 flex flex-col bg-gray-100 rounded-lg border-2 border-black ${
+      className={`fixed inset-0  w-80 h-fit mx-auto my-20 flex flex-col bg-gray-100 rounded-lg border-2 border-black z-50 ${
         props.hidden && "invisible"
       }`}
     >

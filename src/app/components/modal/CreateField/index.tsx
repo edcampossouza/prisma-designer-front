@@ -63,7 +63,7 @@ export default function CreateField(props: Props) {
 
   return (
     <div
-      className={`fixed inset-0  w-fit h-fit mx-auto my-20 flex flex-col bg-code-bd text-text-main rounded-lg p-2 border-black ${
+      className={`fixed inset-0  w-fit h-fit mx-auto my-20 flex flex-col bg-code-bd text-text-main rounded-lg p-2 border-black z-50 ${
         props.hidden && "invisible"
       }`}
     >
