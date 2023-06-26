@@ -42,3 +42,14 @@ export function useGetSchema() {
     getSchema: _useGetSchema.act,
   };
 }
+
+export function useDeleteSchema() {
+  const _useDeleteSchema = useAsync(schemaApi.deleteSchema, false);
+
+  return {
+    schema: _useDeleteSchema.data,
+    getSchemaError: _useDeleteSchema.error,
+    isLoading: _useDeleteSchema.loading,
+    doDelete: _useDeleteSchema.act,
+  };
+}

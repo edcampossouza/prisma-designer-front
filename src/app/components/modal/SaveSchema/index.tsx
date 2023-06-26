@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AiOutlineCloseCircle } from "react-icons/ai";
+import { AiFillDelete, AiOutlineCloseCircle } from "react-icons/ai";
 import { UserInfo } from "@/app/util/auth";
 import { UserContext } from "@/context/user.context";
 import { GraphicContext } from "@/context/graphic.context";
@@ -7,6 +7,7 @@ import {
   useSaveSchema,
   useGetSchemas,
   useGetSchema,
+  useDeleteSchema,
 } from "@/hooks/schema/useSchema";
 import { Schema, deserializeSchema } from "prismadesign-lib";
 
@@ -29,11 +30,11 @@ export default function SaveSchema(props: Props) {
   } = useContext(UserContext);
   const { positions, setPositions } = useContext(GraphicContext);
   const { saveSchema, saveLoading } = useSaveSchema();
-  const { schemas, schemasLoading, getSchemas } =
-    useGetSchemas(false);
+  const { schemas, schemasLoading, getSchemas } = useGetSchemas(false);
   const { schema: fetchedSchema, getSchema, schemaLoading } = useGetSchema();
-
+  const { doDelete, isLoading: isDeleting } = useDeleteSchema();
   const [newSchemaName, setNewSchemaName] = useState(props.schema.name);
+  const [schematoDelete, setSchemaToDelete] = useState<string>();
 
   async function save() {
     try {
@@ -63,6 +64,10 @@ export default function SaveSchema(props: Props) {
     }
   }
 
+  async function preDeleteSchema(name: string) {
+    setSchemaToDelete(name);
+  }
+
   useEffect(() => {
     loadSchemas();
   }, [userInfo]);
@@ -90,6 +95,44 @@ export default function SaveSchema(props: Props) {
     }
   }, [fetchedSchema]);
 
+  const deleteConfirmation = isDeleting ? (
+    <div className="flex justify-center">
+      <span>deleting...</span>
+      {loadingSpinner}
+    </div>
+  ) : (
+    <div className="justify-center">
+      <h3>Are you sure you want to delete schema {schematoDelete}?</h3>
+      <span className="text-sm">this cannot be undone</span>
+      <div className="flex space-x-2">
+        <button
+          className="bg-confirm hover:bg-confirm-hov rounded-md p-1"
+          onClick={() => setSchemaToDelete(undefined)}
+        >
+          No
+          <span className="text-sm">(keep it)</span>
+        </button>
+        <button
+          className="bg-cancel hover:bg-cancel-hov rounded-md p-1"
+          onClick={async () => {
+            try {
+              console.log(schematoDelete);
+              if (schematoDelete) {
+                await doDelete(schematoDelete);
+              }
+            } catch (error) {
+              notifyError(error);
+            } finally {
+              setSchemaToDelete(undefined);
+              getSchemas();
+            }
+          }}
+        >
+          Yes <span className="text-sm">(delete now)</span>
+        </button>
+      </div>
+    </div>
+  );
   return (
     <div
       className={`fixed inset-0  w-80 h-fit max-h-[50vh] mx-auto my-20 p-4 flex flex-col bg-code-bd text-text-main rounded-lg ${
@@ -100,7 +143,9 @@ export default function SaveSchema(props: Props) {
         className="right-2 absolute text-2xl hover:cursor-pointer"
         onClick={() => props.close()}
       />
-      {userInfo ? (
+      {schematoDelete ? (
+        deleteConfirmation
+      ) : userInfo ? (
         <>
           <p className="text-lg flex justify-center items-center">
             <span className="text-sm overflow-auto">{userInfo.email}</span>
@@ -135,14 +180,24 @@ export default function SaveSchema(props: Props) {
                     key={schema.id}
                   >
                     {schema.name}
-                    <button
-                      className="bg-btn-bg hover:bg-btn-bg-hov rounded-md p-1"
-                      onClick={() => {
-                        getSchema(schema.name);
-                      }}
-                    >
-                      load
-                    </button>
+                    <div className="flex space-x-1">
+                      <button
+                        className="bg-btn-bg hover:bg-btn-bg-hov rounded-md p-1"
+                        onClick={() => {
+                          getSchema(schema.name);
+                        }}
+                      >
+                        load
+                      </button>
+                      <button
+                        className="bg-cancel hover:bg-cancel-hov rounded-md p-1"
+                        onClick={() => {
+                          preDeleteSchema(schema.name);
+                        }}
+                      >
+                        <AiFillDelete />
+                      </button>
+                    </div>
                   </li>
                 ))}
             </ul>

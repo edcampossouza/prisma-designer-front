@@ -11,6 +11,10 @@ export async function saveSchema(schema: Object) {
   await api.post("/schema/", schema, { headers: getAuthHeader() });
 }
 
+export async function deleteSchema(name: string) {
+  await api.delete(`/schema/${name}`, { headers: getAuthHeader() });
+}
+
 export async function getSchemas() {
   const result = await api.get("/schema/", { headers: getAuthHeader() });
   return result.data;
