@@ -5,6 +5,7 @@ import { UserContext } from "@/context/user.context";
 import { UserInfo, clearToken } from "@/app/util/auth";
 import SignInComponent from "@/app/sign-in/SignInComponent";
 import SignUpComponent from "@/app/sign-up/SignUpComponent";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 type Props = {
   hidden: boolean;
@@ -62,7 +63,13 @@ export default function User(props: Props) {
         props.hidden && "invisible"
       }`}
     >
-      {component}
+      <div className="relative">
+        <AiOutlineCloseCircle
+          className="absolute text-text-main text-2xl right-3 top-1 hover:cursor-pointer"
+          onClick={() => props.close()}
+        />
+        {component}
+      </div>
     </div>
   );
 }
