@@ -6,6 +6,7 @@ import {
   DateTimeType,
   FieldAttribute,
   IntType,
+  DecimalType,
   Model,
   Schema,
   StringType,
@@ -29,7 +30,13 @@ type Props = {
 };
 
 export default function TypeOptions(props: Props) {
-  const options: DataType[] = [BooleanType, DateTimeType, IntType, StringType];
+  const options: DataType[] = [
+    BooleanType,
+    DateTimeType,
+    IntType,
+    StringType,
+    DecimalType,
+  ];
 
   const [possibleAttributes, setPossibleAttributes] = useState<
     FieldAttribute[]
@@ -106,7 +113,9 @@ export default function TypeOptions(props: Props) {
 
       <h3>Key Options</h3>
       <div className="flex items-center mb-2">
-        <div className={`flex items-center w-full ${!isForeignKey && "border-b"}`}>
+        <div
+          className={`flex items-center w-full ${!isForeignKey && "border-b"}`}
+        >
           <span className={`text-sm`}>Foreign Key?</span>
           <input
             type="checkbox"
@@ -122,7 +131,7 @@ export default function TypeOptions(props: Props) {
       {isForeignKey && (
         <div className="flex flex-col">
           <h2>References:</h2>
-          <div className="border-b mb-2 pb-2"> 
+          <div className="border-b mb-2 pb-2">
             {props.schema.models.map((model) => (
               <label
                 key={model.name}

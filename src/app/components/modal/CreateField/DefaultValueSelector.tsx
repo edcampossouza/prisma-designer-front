@@ -61,6 +61,7 @@ export default function DefaultValueSelector(props: Props) {
         <>
           <input
             type="text"
+            className="text-field-color bg-btn-bg"
             value={value}
             onChange={(e) => setValue(e.target.value)}
           />
