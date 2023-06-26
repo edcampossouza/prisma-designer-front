@@ -51,13 +51,13 @@ export default function TypeOptions(props: Props) {
   }, [selectedType, isForeignKey]);
 
   return (
-    <>
-      <h2 className="mx-auto text-2xl">Type Options</h2>
-      <div className="ml-5">
+    <div className="w-full pl-4">
+      <h2>Field Type</h2>
+      <div className="border-b mb-2 py-2">
         {options.map((type) => (
           <label
             key={type.name}
-            className="flex items-center hover:cursor-pointer"
+            className={`flex items-center hover:cursor-pointer text-sm hover:bg-btn-bg-hov`}
           >
             <input
               type="radio"
@@ -75,45 +75,42 @@ export default function TypeOptions(props: Props) {
           </label>
         ))}
       </div>
-      {
-        <>
-          <div className="ml-2 flex flex-col">
-            <h3 className="text-center text-xl">Attributes</h3>
-            <div className="flex ml-5 space-x-4 ">
-              {possibleAttributes.map((attribute) => (
-                <label key={attribute.name} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="w-5 h-5 mr-2"
-                    checked={
-                      props.attributes.find((a) => a === attribute) !==
-                      undefined
-                    }
-                    onChange={() => {
-                      const f = props.attributes.find((a) => a === attribute);
-                      if (f)
-                        props.setAttributes(
-                          props.attributes.filter((at) => at !== attribute)
-                        );
-                      else {
-                        props.setAttributes([...props.attributes, attribute]);
-                      }
-                    }}
-                  />
-                  {attribute.name}
-                </label>
-              ))}
-            </div>
-          </div>
-        </>
-      }
-      <h3 className="text-center text-xl">Key Options</h3>
-      <div className="flex items-center">
-        <div className="mx-auto flex items-center">
-          <span className="mr-2">Foreign Key?</span>
+
+      <div className="flex flex-col border-b mb-2 pb-2">
+        <h3>Attributes</h3>
+        <div className="flex space-x-4 ">
+          {possibleAttributes.map((attribute) => (
+            <label key={attribute.name} className="flex items-center text-sm">
+              <input
+                type="checkbox"
+                className="w-4 h-4 mr-2"
+                checked={
+                  props.attributes.find((a) => a === attribute) !== undefined
+                }
+                onChange={() => {
+                  const f = props.attributes.find((a) => a === attribute);
+                  if (f)
+                    props.setAttributes(
+                      props.attributes.filter((at) => at !== attribute)
+                    );
+                  else {
+                    props.setAttributes([...props.attributes, attribute]);
+                  }
+                }}
+              />
+              {attribute.name}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <h3>Key Options</h3>
+      <div className="flex items-center mb-2">
+        <div className={`flex items-center w-full ${!isForeignKey && "border-b"}`}>
+          <span className={`text-sm`}>Foreign Key?</span>
           <input
             type="checkbox"
-            className="w-5 h-5 mr-2"
+            className="w-4 h-4 ml-2"
             checked={isForeignKey}
             onChange={(e) => {
               const { checked } = e.target;
@@ -123,23 +120,29 @@ export default function TypeOptions(props: Props) {
         </div>
       </div>
       {isForeignKey && (
-        <div className="flex flex-col ml-5">
-          {props.schema.models.map((model) => (
-            <label key={model.name} className="flex items-center">
-              <input
-                type="radio"
-                name="references"
-                className="w-5 h-5 mr-2"
-                checked={props.referencedModel === model}
-                onChange={() => {
-                  props.setReferences({ references: model });
-                }}
-              />
-              <span>{model.name}</span>
-            </label>
-          ))}
+        <div className="flex flex-col">
+          <h2>References:</h2>
+          <div className="border-b mb-2 pb-2"> 
+            {props.schema.models.map((model) => (
+              <label
+                key={model.name}
+                className="flex items-center hover:cursor-pointer text-sm hover:bg-btn-bg-hov"
+              >
+                <input
+                  type="radio"
+                  name="references"
+                  className="w-5 h-5 mr-2"
+                  checked={props.referencedModel === model}
+                  onChange={() => {
+                    props.setReferences({ references: model });
+                  }}
+                />
+                <span>{model.name}</span>
+              </label>
+            ))}
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

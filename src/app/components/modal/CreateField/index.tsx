@@ -63,7 +63,7 @@ export default function CreateField(props: Props) {
 
   return (
     <div
-      className={`fixed inset-0  w-fit h-fit mx-auto my-20 flex flex-col bg-gray-100 rounded-lg border-2 border-black ${
+      className={`fixed inset-0  w-fit h-fit mx-auto my-20 flex flex-col bg-code-bd text-text-main rounded-lg p-2 border-black ${
         props.hidden && "invisible"
       }`}
     >
@@ -71,7 +71,7 @@ export default function CreateField(props: Props) {
         <span className="pr-2">Field name: </span>
         <input
           ref={inputRef}
-          className="text-lg bg-slate-200 "
+          className="text-field-color bg-btn-bg"
           value={name}
           onChange={(e) => setName(e.target.value)}
           onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -100,13 +100,13 @@ export default function CreateField(props: Props) {
       )}
       <div className="flex justify-around">
         <button
-          className="rounded bg-green-300 hover:bg-green-500 w-fit px-2 "
+          className="rounded bg-confirm hover:bg-confirm-hov w-fit px-2 "
           onClick={submit}
         >
           Create
         </button>
         <button
-          className="rounded bg-orange-300 hover:bg-orange-500 w-fit px-2 "
+          className="rounded bg-cancel hover:bg-cancel-hov w-fit px-2 "
           onClick={() => props.cancel()}
         >
           Cancel

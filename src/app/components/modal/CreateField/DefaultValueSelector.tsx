@@ -20,12 +20,15 @@ export default function DefaultValueSelector(props: Props) {
   const [customValue, setCustomValue] = useState(false);
 
   return (
-    <div className="font-mono text-sm flex flex-col">
+    <div className="font-mono text-sm flex flex-col pl-4">
       <h3 className="font-sans text-base">Default value</h3>
       {options ? (
         <>
           {options.map((op) => (
-            <label key={op}>
+            <label
+              key={op}
+              className="flex items-center hover:cursor-pointer text-sm hover:bg-btn-bg-hov"
+            >
               <input
                 type="radio"
                 name="value"
@@ -38,7 +41,7 @@ export default function DefaultValueSelector(props: Props) {
               {op}
             </label>
           ))}
-          <label>
+          <label className="flex items-center hover:cursor-pointer text-sm hover:bg-btn-bg-hov">
             <input
               type="radio"
               name="value"
@@ -47,6 +50,7 @@ export default function DefaultValueSelector(props: Props) {
             custom:
             <input
               type="text"
+              className="text-field-color bg-btn-bg"
               disabled={!customValue}
               value={customValue ? value : ""}
               onChange={(e) => setValue(e.target.value)}
