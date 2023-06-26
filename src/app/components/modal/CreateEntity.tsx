@@ -31,7 +31,7 @@ export default function CreateEntity(props: Props) {
 
   return (
     <div
-      className={`fixed inset-0  w-fit h-fit mx-auto my-20 flex flex-col bg-gray-100 rounded-lg border-2 border-black ${
+      className={`fixed inset-0  w-fit h-fit mx-auto my-20 flex flex-col bg-code-bd text-text-main rounded-lg   ${
         props.hidden && "invisible"
       } p-2`}
     >
@@ -44,7 +44,7 @@ export default function CreateEntity(props: Props) {
             <td>
               <input
                 ref={inputRef}
-                className="text-lg bg-slate-200"
+                className="text-model-color bg-btn-bg"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -63,7 +63,7 @@ export default function CreateEntity(props: Props) {
             </td>
             <td className="pr-2 pt-2">
               <input
-                className="w-5 h-5"
+                className="w-4 h-4"
                 type="checkbox"
                 checked={toCreateId}
                 onChange={(e) => setToCreateId(e.target.checked)}
@@ -74,13 +74,13 @@ export default function CreateEntity(props: Props) {
       </table>
       <div className="flex justify-around">
         <button
-          className="rounded bg-green-300 hover:bg-green-500 w-fit px-2 "
+          className="rounded bg-confirm hover:bg-confirm-hov w-fit px-2 "
           onClick={submit}
         >
           Create
         </button>
         <button
-          className="rounded bg-orange-300 hover:bg-orange-500 w-fit px-2 "
+          className="rounded bg-cancel hover:bg-cancel-hov w-fit px-2 "
           onClick={cancel}
         >
           Cancel

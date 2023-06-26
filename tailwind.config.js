@@ -23,6 +23,8 @@ module.exports = {
         "btn-bg-hov": "var(--btn-bg-hov)",
         "confirm": "var(--confirm)",
         "confirm-hov": "var(--confirm-hov)",
+        "cancel": "var(--cancel)",
+        "cancel-hov": "var(--cancel-hov)",
       },
     },
   },
