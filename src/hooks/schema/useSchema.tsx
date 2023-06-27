@@ -53,3 +53,16 @@ export function useDeleteSchema() {
     doDelete: _useDeleteSchema.act,
   };
 }
+
+export function useGenerateSchema() {
+  const _useGenerateSchema = useAsync<string>(
+    schemaApi.generatePrismaFromSchema,
+    false
+  );
+
+  return {
+    schemaFile: _useGenerateSchema.data,
+    schemaFileLoading: _useGenerateSchema.loading,
+    doGenerate: _useGenerateSchema.act,
+  };
+}

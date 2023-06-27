@@ -31,6 +31,7 @@ import SaveSchema from "./modal/SaveSchema";
 
 import { nanoid } from "nanoid";
 import { isAxiosError } from "axios";
+import { useGenerateSchema } from "@/hooks/schema/useSchema";
 
 export type ReferenceOptions = {
   references: Model;
@@ -47,7 +48,6 @@ export default function App() {
   // to disable shortcuts while typing in input fields
   const [typing, setTyping] = useState(false);
   const [selectedModel, setSelectedModel] = useState<Model | null>(null);
-  const [schemaText, setSchemaText] = useState("");
   const [schema, setSchema] = useState(new Schema(`unnamed-${nanoid(5)}`));
 
   const [graphicInfo, setGraphicInfo] = useState<PositionsRecord>({});
@@ -55,6 +55,8 @@ export default function App() {
   const [yBound, setYBound] = useState(0);
 
   const [user, setUser] = useState<UserInfo>();
+
+  const { doGenerate, schemaFile, schemaFileLoading } = useGenerateSchema();
 
   function readUserInfo() {
     const data = getUserToken();
@@ -128,7 +130,6 @@ export default function App() {
     setUserWindow(false);
     setSaveWindow(true);
   }
-
   return (
     <div>
       <UserContext.Provider
@@ -174,11 +175,8 @@ export default function App() {
             }}
             toggleUserWindow={fnUserWindow}
             toggleSaveWindow={fnSaveWindow}
-            generateSchema={async () => {
-              const serialized = schema.toSerial();
-              const res = await generatePrismaFromSchema(serialized);
-              setSchemaText(res);
-            }}
+            generateSchema={() => doGenerate(schema.toSerial())}
+            isDataLoading={schemaFileLoading}
           />
           <Canvas schema={schema} onDragModel={onSelectModel} />
           <UserWindow hidden={!userWindow} close={() => setUserWindow(false)} />
@@ -247,7 +245,7 @@ export default function App() {
         </GraphicContext.Provider>
 
         <Toaster />
-        <SchemaPanel formattedText={schemaText} />
+        <SchemaPanel formattedText={schemaFile} />
       </UserContext.Provider>
     </div>
   );

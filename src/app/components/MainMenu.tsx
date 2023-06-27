@@ -9,6 +9,7 @@ import { FiUserCheck, FiUserPlus } from "react-icons/fi";
 import { Model } from "prismadesign-lib";
 import { useContext, useState } from "react";
 import { UserContext } from "@/context/user.context";
+import { loadingSpinner } from "./spinner/spinner";
 
 type Props = {
   createEntity: Function;
@@ -19,6 +20,7 @@ type Props = {
   setSchemaName: (name: string) => void;
   selectedModel: Model | null;
   generateSchema: Function;
+  isDataLoading: boolean;
 };
 export default function MainMenu(props: Props) {
   const { user } = useContext(UserContext);
@@ -53,8 +55,14 @@ export default function MainMenu(props: Props) {
             className="flex flex-col items-center bg-btn-bg text-text-main hover:cursor-pointer hover:bg-btn-bg-hov rounded-md w-16"
             onClick={() => props.generateSchema()}
           >
-            Generate
-            <AiOutlineSend className="text-white text-lg " />
+            {props.isDataLoading ? (
+              <>{loadingSpinner}</>
+            ) : (
+              <>
+                Generate
+                <AiOutlineSend className="text-white text-lg " />
+              </>
+            )}
           </div>
           {user && (
             <div

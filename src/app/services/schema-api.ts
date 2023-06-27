@@ -1,7 +1,8 @@
+import { SerializedSchema } from "prismadesign-lib";
 import { getAuthHeader } from "../util/auth";
 import api from "./api";
 
-export async function generatePrismaFromSchema(schema: Object) {
+export async function generatePrismaFromSchema(schema: SerializedSchema) {
   const response = await api.post("/schema/generate", schema);
 
   return response.data;
