@@ -172,7 +172,7 @@ export default function SaveSchema(props: Props) {
               save
             </button>
           )}
-          {(schemasLoading || saveLoading) && (
+          {(schemasLoading || saveLoading || schemaLoading) && (
             <div className="mx-auto">{loadingSpinner}</div>
           )}
           {!schemaLoading && schemas && schemas.length > 0 && (
