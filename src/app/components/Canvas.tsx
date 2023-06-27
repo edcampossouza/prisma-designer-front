@@ -15,7 +15,6 @@ export default function Canvas(props: Props) {
   const { notifyError } = useContext(UserContext);
   const { x_bound, y_bound } = useContext(GraphicContext);
 
-  console.log(x_bound, y_bound);
   const update = useXarrow();
   return (
     <Xwrapper>
