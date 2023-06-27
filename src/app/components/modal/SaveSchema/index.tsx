@@ -163,13 +163,18 @@ export default function SaveSchema(props: Props) {
             />
           </label>
           {saveLoading ? (
-            <span className="text-center">saving...</span>
+            <span className="text-center ">saving...</span>
           ) : (
-            <button className="font-mono" onClick={save}>
+            <button
+              className="font-mono bg-confirm hover:bg-confirm-hov w-fit mx-auto px-4 mt-2 rounded-md"
+              onClick={save}
+            >
               save
             </button>
           )}
-          {schemasLoading && <div className="mx-auto">{loadingSpinner}</div>}
+          {(schemasLoading || saveLoading) && (
+            <div className="mx-auto">{loadingSpinner}</div>
+          )}
           {!schemaLoading && schemas && schemas.length > 0 && (
             <ul className="p-2 overflow-y-auto">
               <h4>Your schemas:</h4>
