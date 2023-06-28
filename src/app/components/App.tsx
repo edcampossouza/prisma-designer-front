@@ -3,7 +3,7 @@
 import Canvas from "@/app/components/Canvas";
 import MainMenu from "@/app/components/MainMenu";
 import UserWindow from "./modal/User";
-import CreateEntity from "./modal/CreateEntity";
+import CreateEntity, { EntityCreationOptions } from "./modal/CreateEntity";
 import CreateField from "./modal/CreateField";
 import { UserContext } from "@/context/user.context";
 import { GraphicContext, PositionsRecord } from "@/context/graphic.context";
@@ -25,6 +25,8 @@ import {
   FieldAttribute,
   DefaultFieldAttribute,
   Field,
+  DateTimeType,
+  UpdatedAtFieldAttribute,
 } from "prismadesign-lib";
 import { generatePrismaFromSchema } from "../services/schema-api";
 import SaveSchema from "./modal/SaveSchema";
@@ -190,13 +192,23 @@ export default function App() {
           <CreateEntity
             hidden={!createEntity}
             cancel={() => setCreateEntity(false)}
-            submit={(name: string, createId?: boolean) => {
+            submit={(name: string, options: EntityCreationOptions) => {
               try {
                 const model = schema.addModel(name);
-                if (createId) {
+                if (options.idField) {
                   model.addField("id", IntType, "autoincrement()", [
                     IdFieldAttribute,
                     DefaultFieldAttribute,
+                  ]);
+                }
+                if (options.createdAtField) {
+                  model.addField("createdAt", DateTimeType, "now()", [
+                    DefaultFieldAttribute,
+                  ]);
+                }
+                if (options.updatedAtField) {
+                  model.addField("updatedAt", DateTimeType, undefined, [
+                    UpdatedAtFieldAttribute,
                   ]);
                 }
                 onSelectModel(model);

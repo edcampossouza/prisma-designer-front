@@ -2,9 +2,15 @@
 
 import React, { useState, useRef, useEffect } from "react";
 
+export type EntityCreationOptions = {
+  idField: boolean;
+  createdAtField: boolean;
+  updatedAtField: boolean;
+};
+
 type Props = {
   hidden: boolean;
-  submit?: (name: string, createId?: boolean) => void;
+  submit?: (name: string, options: EntityCreationOptions) => void;
   cancel?: Function;
 };
 
@@ -12,9 +18,15 @@ export default function CreateEntity(props: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   const [toCreateId, setToCreateId] = useState(true);
+  const [toCreateCreatedAtField, setToCreateCreatedAtField] = useState(false);
+  const [toCreateUpdatedAtField, setToCreateUpdatedAtField] = useState(false);
   function submit() {
     if (props.submit) {
-      props.submit(name, toCreateId);
+      props.submit(name, {
+        idField: toCreateId,
+        createdAtField: toCreateCreatedAtField,
+        updatedAtField: toCreateUpdatedAtField,
+      });
       setName("");
     }
   }
@@ -59,7 +71,9 @@ export default function CreateEntity(props: Props) {
           </tr>
           <tr>
             <td className="pr-2 pt-2">
-              <span className="">Create id field?</span>
+              <span className="">
+                Create <span className="text-field-color">id</span> field?
+              </span>
             </td>
             <td className="pr-2 pt-2">
               <input
@@ -67,6 +81,38 @@ export default function CreateEntity(props: Props) {
                 type="checkbox"
                 checked={toCreateId}
                 onChange={(e) => setToCreateId(e.target.checked)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td className="pr-2 pt-2">
+              <span className="">
+                Create <span className="text-field-color">createdAt</span>{" "}
+                field?
+              </span>
+            </td>
+            <td className="pr-2 pt-2">
+              <input
+                className="w-4 h-4"
+                type="checkbox"
+                checked={toCreateCreatedAtField}
+                onChange={(e) => setToCreateCreatedAtField(e.target.checked)}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td className="pr-2 pt-2">
+              <span className="">
+                Create <span className="text-field-color">updatedAt</span>{" "}
+                field?
+              </span>
+            </td>
+            <td className="pr-2 pt-2">
+              <input
+                className="w-4 h-4"
+                type="checkbox"
+                checked={toCreateUpdatedAtField}
+                onChange={(e) => setToCreateUpdatedAtField(e.target.checked)}
               />
             </td>
           </tr>
