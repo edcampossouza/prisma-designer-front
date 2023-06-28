@@ -139,7 +139,7 @@ export default function SaveSchema(props: Props) {
   );
   return (
     <div
-      className={`fixed inset-0  w-80 h-fit max-h-[50vh] mx-auto my-20 p-4 flex flex-col bg-code-bd text-text-main rounded-lg ${
+      className={`fixed inset-0  w-80 h-fit max-h-[50vh] mx-auto my-20 p-4 flex flex-col bg-code-bd text-text-main rounded-lg z-50 ${
         props.hidden && "invisible"
       }`}
     >
