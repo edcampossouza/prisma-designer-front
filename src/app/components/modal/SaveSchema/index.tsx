@@ -36,6 +36,10 @@ export default function SaveSchema(props: Props) {
   const [newSchemaName, setNewSchemaName] = useState(props.schema.name);
   const [schematoDelete, setSchemaToDelete] = useState<string>();
 
+  useEffect(() => {
+    setNewSchemaName(props.schema.name);
+  }, [props.schema]);
+
   async function save() {
     try {
       const serializedSchema = props.schema.toSerial();
